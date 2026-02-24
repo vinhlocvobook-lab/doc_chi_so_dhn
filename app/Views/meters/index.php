@@ -186,6 +186,23 @@
                         <textarea name="last_prompt_txt" id="last_prompt_txt" class="filter-input" rows="4"
                             placeholder="Nhập câu lệnh prompt cho AI..."></textarea>
                     </div>
+
+                    <!-- Prompt suggestions panel -->
+                    <div style="margin-top:0.5rem;">
+                        <button type="button" id="btn-toggle-prompts" onclick="togglePromptSuggestions()"
+                            style="background:rgba(255,255,255,0.07); border:1px dashed rgba(255,255,255,0.25); color:rgba(255,255,255,0.75); padding:6px 14px; border-radius:6px; cursor:pointer; font-size:0.82rem; display:flex; align-items:center; gap:6px; transition:all 0.2s;">
+                            💡 Mẫu Prompt gợi ý <span id="prompt-arrow">▼</span>
+                        </button>
+
+                        <div id="prompt-suggestions" style="display:none; margin-top:0.75rem; display:none;">
+                            <p style="font-size:0.78rem; color:rgba(255,255,255,0.5); margin-bottom:0.6rem;">
+                                Nhấn <strong>Áp dụng</strong> để điền vào ô prompt. Các giá trị <code
+                                    style="color:#a5b4fc;">{…}</code> sẽ được thay thế tự động từ cấu hình hiện tại.
+                            </p>
+                            <div id="prompt-template-list" style="display:flex; flex-direction:column; gap:0.6rem;">
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- LLM Model Selector -->
@@ -462,6 +479,122 @@
             if (ni < 0 || ni >= selectedLlmModels.length) return;
             [selectedLlmModels[idx], selectedLlmModels[ni]] = [selectedLlmModels[ni], selectedLlmModels[idx]];
             renderLlmSelected();
+        };
+
+        // ── Prompt Suggestions ──────────────────────────────────────────
+        const PROMPT_TEMPLATES = [
+            {
+                name: '🔢 Cơ bản – Chỉ trả số',
+                desc: 'Ngắn gọn, chỉ yêu cầu trả về số chỉ số.',
+                text:
+                    `Đây là hình ảnh đồng hồ nước loại {loai}.
+Hãy đọc chỉ số nước hiển thị trên mặt đồng hồ.
+Chỉ trả về con số nguyên, không giải thích thêm.`
+            },
+            {
+                name: '📐 Có số chữ số – Phần nguyên & thập phân',
+                desc: 'Chỉ rõ số chữ số cần đọc.',
+                text:
+                    `Hình ảnh cho thấy một đồng hồ nước loại {loai}.
+Mặt đồng hồ có {n} chữ số phần nguyên (màu đen/trắng) và {d} chữ số phần thập phân (màu đỏ).
+Hãy đọc chỉ số nước: chỉ lấy phần nguyên {n} chữ số, bỏ qua phần thập phân.
+Trả về một số nguyên duy nhất.`
+            },
+            {
+                name: '🧠 Chi tiết – JSON format',
+                desc: 'Trả về JSON với chỉ số và mức độ tự tin.',
+                text:
+                    `Bạn là chuyên gia đọc chỉ số đồng hồ nước.
+Quan sát kỹ hình ảnh đồng hồ nước loại {loai}.
+Đồng hồ có {n} chữ số phần nguyên.
+Hãy đọc chỉ số và trả về kết quả theo đúng định dạng JSON sau:
+{"chiSo": <số nguyên>, "doTinCay": "<cao|trung_binh|thap>", "ghiChu": "<mô tả ngắn nếu có vấn đề>"}`
+            },
+            {
+                name: '⚠️ Xử lý khi mờ/góc lệch',
+                desc: 'Hướng dẫn xử lý khi hình không rõ.',
+                text:
+                    `Bạn là AI chuyên đọc chỉ số đồng hồ nước. Phân tích hình ảnh đồng hồ nước loại {loai}.
+Quy tắc đọc:
+- Đọc {n} chữ số phần nguyên từ trái sang phải
+- Nếu hình mờ hoặc góc lệch, hãy ước tính chỉ số tốt nhất có thể
+- Bỏ qua bụi bẩn, sương, hay góc chụp lệch
+{quy_tac}
+Trả về JSON: {"chiSo": <số>, "doTinCay": "<cao|trung_binh|thap>"}`
+            },
+            {
+                name: '🔍 So sánh – Kiểm tra bất thường',
+                desc: 'Kết hợp đọc chỉ số và phát hiện bất thường.',
+                text:
+                    `Phân tích hình ảnh đồng hồ nước loại {loai}.
+Nhiệm vụ:
+1. Đọc chỉ số nước ({n} chữ số phần nguyên)
+2. Kiểm tra xem đồng hồ có dấu hiệu bất thường không (rỉ sét, kính vỡ, kim không đúng vị trí...)
+Trả về JSON:
+{"chiSo": <số nguyên>, "batThuong": <true|false>, "moTa": "<mô tả bất thường nếu có>"}`
+            }
+        ];
+
+        let _promptPanelOpen = false;
+
+        function buildPromptTemplates() {
+            const container = document.getElementById('prompt-template-list');
+            if (!container) return;
+            container.innerHTML = '';
+            PROMPT_TEMPLATES.forEach((tpl, idx) => {
+                const card = document.createElement('div');
+                card.style.cssText = 'padding:10px 14px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:8px; cursor:pointer; transition:background 0.15s;';
+                card.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center; gap:0.5rem;">
+                        <div>
+                            <div style="font-size:0.85rem; font-weight:600; color:white;">${tpl.name}</div>
+                            <div style="font-size:0.75rem; color:rgba(255,255,255,0.5); margin-top:2px;">${tpl.desc}</div>
+                        </div>
+                        <button type="button" onclick="applyPromptTemplate(${idx})"
+                            style="flex-shrink:0; background:var(--primary); color:white; border:none; border-radius:6px; padding:4px 12px; font-size:0.8rem; cursor:pointer;">
+                            Áp dụng
+                        </button>
+                    </div>
+                    <pre style="margin:8px 0 0; font-size:0.75rem; color:rgba(255,255,255,0.45); white-space:pre-wrap; font-family:monospace; max-height:60px; overflow:hidden;">${tpl.text.substring(0, 120)}…</pre>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        window.togglePromptSuggestions = function () {
+            _promptPanelOpen = !_promptPanelOpen;
+            const panel = document.getElementById('prompt-suggestions');
+            const arrow = document.getElementById('prompt-arrow');
+            if (panel) panel.style.display = _promptPanelOpen ? 'block' : 'none';
+            if (arrow) arrow.textContent = _promptPanelOpen ? '▲' : '▼';
+            if (_promptPanelOpen) buildPromptTemplates();
+        };
+
+        window.applyPromptTemplate = function (idx) {
+            const tpl = PROMPT_TEMPLATES[idx];
+            if (!tpl) return;
+
+            // Substitute variables from current form values
+            const n = document.getElementById('phan_nguyen_digits')?.value || '?';
+            const d = document.getElementById('phan_thap_phan_digits')?.value || '0';
+            const loai = document.getElementById('loai_hien_thi')?.value || 'đồng hồ cơ';
+            const quyTac = document.getElementById('quy_tac_bo_sung')?.value || '';
+
+            let text = tpl.text
+                .replace(/\{n\}/g, n)
+                .replace(/\{d\}/g, d)
+                .replace(/\{loai\}/g, loai)
+                .replace(/\{quy_tac\}/g, quyTac ? '- ' + quyTac : '');
+
+            const ta = document.getElementById('last_prompt_txt');
+            if (ta) {
+                ta.value = text;
+                ta.focus();
+                // highlight
+                ta.style.border = '1.5px solid #4f46e5';
+                setTimeout(() => ta.style.border = '', 1200);
+            }
+            showToast('Đã áp dụng mẫu: ' + tpl.name);
         };
 
         // ── Modal ───────────────────────────────────────────────────────
