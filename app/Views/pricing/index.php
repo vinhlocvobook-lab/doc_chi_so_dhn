@@ -231,6 +231,7 @@
 
     document.getElementById('pricing-form').addEventListener('submit', async function (e) {
         e.preventDefault();
+        e.stopPropagation(); // prevent app.js handleFormSubmit from also intercepting this event
         const formData = new FormData(this);
         try {
             const res = await fetch('/pricing/save', {

@@ -35,9 +35,12 @@ class MeterType
 
     public function create($data)
     {
-        // If setting as default, unset other defaults
-        if (isset($data['la_mac_dinh']) && $data['la_mac_dinh']) {
-            $this->db->exec("UPDATE loai_dhn SET la_mac_dinh = 0");
+        // la_mac_dinh: use NULL for non-default (UNIQUE constraint covers 0 too)
+        if (empty($data['la_mac_dinh'])) {
+            $data['la_mac_dinh'] = null;
+        } else {
+            // Unset other defaults before setting new one
+            $this->db->exec("UPDATE loai_dhn SET la_mac_dinh = NULL WHERE la_mac_dinh = 1");
         }
 
         $fields = array_keys($data);
@@ -51,8 +54,11 @@ class MeterType
 
     public function update($id, $data)
     {
-        if (isset($data['la_mac_dinh']) && $data['la_mac_dinh']) {
-            $this->db->exec("UPDATE loai_dhn SET la_mac_dinh = 0 WHERE id != " . (int) $id);
+        // la_mac_dinh: use NULL for non-default (UNIQUE constraint covers 0)
+        if (empty($data['la_mac_dinh'])) {
+            $data['la_mac_dinh'] = null;
+        } else {
+            $this->db->exec("UPDATE loai_dhn SET la_mac_dinh = NULL WHERE id != " . (int) $id . " AND la_mac_dinh = 1");
         }
 
         $fields = [];

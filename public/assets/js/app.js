@@ -53,6 +53,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // Re-execute <script> tags injected via innerHTML (browsers don't run them automatically)
+    const executeScripts = (container) => {
+        container.querySelectorAll('script').forEach(oldScript => {
+            const newScript = document.createElement('script');
+            [...oldScript.attributes].forEach(attr => newScript.setAttribute(attr.name, attr.value));
+            newScript.textContent = oldScript.textContent;
+            oldScript.parentNode.replaceChild(newScript, oldScript);
+        });
+    };
+
     const loadPage = async (url, allowPartial = false) => {
         const contentArea = document.querySelector('#main-content');
         let resultsArea = document.querySelector('#history-results');
@@ -77,8 +87,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (usePartial && newResults) {
                 resultsArea.innerHTML = newResults.innerHTML;
+                executeScripts(resultsArea);
             } else {
                 contentArea.innerHTML = html;
+                executeScripts(contentArea);
                 window.scrollTo(0, 0);
             }
 
@@ -117,7 +129,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const html = await response.text();
-            if (contentArea) contentArea.innerHTML = html;
+            if (contentArea) {
+                contentArea.innerHTML = html;
+                executeScripts(contentArea);
+            }
             window.history.pushState({}, '', url);
             window.scrollTo(0, 0);
         } catch (err) {

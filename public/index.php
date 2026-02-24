@@ -38,6 +38,8 @@ $router->add('GET', '/pricing', 'GeminiPricingController@index');
 $router->add('POST', '/pricing/save', 'GeminiPricingController@save');
 $router->add('POST', '/pricing/delete', 'GeminiPricingController@delete');
 $router->add('GET', '/history/detail', 'HistoryController@detail');
+$router->add('POST', '/history/update-meter-type', 'HistoryController@updateMeterType');
+
 
 $method = $_SERVER['REQUEST_METHOD'];
 $uri = $_SERVER['REQUEST_URI'];
