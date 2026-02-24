@@ -1,0 +1,52 @@
+# ========================
+# Sensitive / Credentials
+# ========================
+.env
+*.key
+
+# ========================
+# PHP / Dependencies
+# ========================
+vendor/
+composer.lock
+
+# ========================
+# Temp / Cache / Logs
+# ========================
+*.log
+/tmp/
+/cache/
+storage/logs/
+storage/cache/
+
+# ========================
+# IDE / Editor
+# ========================
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# ========================
+# OS Files
+# ========================
+.DS_Store
+.AppleDouble
+.LSOverride
+desktop.ini
+
+# ========================
+# Dev-only scripts (run once, not for prod)
+# ========================
+migrate_*.php
+test_*.php
+inspect_*.php
+list_*.php
+
+# ========================
+# Build outputs
+# ========================
+/dist/
+*.min.js.map
