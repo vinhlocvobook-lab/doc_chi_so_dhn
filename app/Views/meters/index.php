@@ -86,12 +86,16 @@
 
 <!-- Modal Form -->
 <div id="meter-modal" class="modal"
-    style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px);">
-    <div class="glass-card"
-        style="width: 90%; max-width: 820px; margin: 2rem auto; padding: 2rem; position: relative; max-height: 90vh; overflow-y: auto;">
+    style="display:none; position:fixed; z-index:1000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.75); backdrop-filter:blur(8px); overflow-y:auto;">
+    <div id="meter-modal-inner" style="width:90%; max-width:860px; margin:2rem auto; padding:2.5rem; position:relative;
+               background:linear-gradient(135deg,#0f0f2e 0%,#1a1a3e 100%);
+               border:1px solid rgba(139,92,246,0.25); border-radius:20px;
+               box-shadow:0 24px 80px rgba(0,0,0,0.6),inset 0 1px 0 rgba(255,255,255,0.07);">
         <span onclick="closeMeterModal()"
-            style="position: absolute; right: 1.5rem; top: 1rem; font-size: 2rem; cursor: pointer; color: white;">&times;</span>
-        <h2 id="modal-title" style="color: var(--primary); margin-bottom: 2rem;">Thêm loại đồng hồ mới</h2>
+            style="position:absolute; right:1.5rem; top:1.2rem; font-size:1.8rem; cursor:pointer; color:rgba(255,255,255,0.6); line-height:1; transition:color 0.2s;"
+            onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.6)'">&times;</span>
+        <h2 id="modal-title" style="color:#a78bfa; margin-bottom:2rem; font-size:1.4rem; letter-spacing:-0.01em;">Thêm
+            loại đồng hồ mới</h2>
 
         <form id="meter-form">
             <input type="hidden" name="id" id="meter-id">
@@ -272,6 +276,123 @@
         </form>
     </div>
 </div>
+
+<style>
+    /* ── Dark Modal Form Styles ───────────────────────────────────────── */
+    #meter-modal-inner .filter-group label,
+    #meter-modal-inner label {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: rgba(167, 139, 250, 0.9);
+        /* soft violet */
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin-bottom: 4px;
+    }
+
+    #meter-modal-inner .filter-input,
+    #meter-modal-inner input[type="text"],
+    #meter-modal-inner input[type="number"],
+    #meter-modal-inner select,
+    #meter-modal-inner textarea {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(139, 92, 246, 0.3);
+        border-radius: 8px;
+        color: #f1f5f9;
+        padding: 9px 13px;
+        font-size: 0.9rem;
+        width: 100%;
+        box-sizing: border-box;
+        outline: none;
+        transition: border-color 0.2s, background 0.2s;
+    }
+
+    #meter-modal-inner .filter-input::placeholder,
+    #meter-modal-inner textarea::placeholder,
+    #meter-modal-inner input::placeholder {
+        color: rgba(255, 255, 255, 0.28);
+    }
+
+    #meter-modal-inner .filter-input:focus,
+    #meter-modal-inner input:focus,
+    #meter-modal-inner select:focus,
+    #meter-modal-inner textarea:focus {
+        border-color: rgba(139, 92, 246, 0.7);
+        background: rgba(139, 92, 246, 0.1);
+        box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.12);
+    }
+
+    #meter-modal-inner select option {
+        background: #1a1a3e;
+        color: #f1f5f9;
+    }
+
+    /* Section divider headers */
+    #meter-modal-inner h3 {
+        font-size: 0.82rem !important;
+        font-weight: 700;
+        color: rgba(167, 139, 250, 0.7) !important;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        margin: 0;
+    }
+
+    #meter-modal-inner [style*="border-bottom"] {
+        border-bottom-color: rgba(139, 92, 246, 0.2) !important;
+        padding-bottom: 0.5rem;
+    }
+
+    /* Checkboxes */
+    #meter-modal-inner input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+        accent-color: #7c3aed;
+        cursor: pointer;
+    }
+
+    /* Prompt suggestion button */
+    #btn-toggle-prompts {
+        background: rgba(139, 92, 246, 0.1);
+        border: 1px dashed rgba(139, 92, 246, 0.35);
+        color: rgba(167, 139, 250, 0.9);
+        padding: 6px 14px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.82rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s;
+    }
+
+    #btn-toggle-prompts:hover {
+        background: rgba(139, 92, 246, 0.2);
+        border-color: rgba(139, 92, 246, 0.6);
+    }
+
+    /* LLM selected list container */
+    #llm-selected-list {
+        min-height: 60px;
+        border: 1px dashed rgba(139, 92, 246, 0.3);
+        border-radius: 8px;
+        padding: 0.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+        background: rgba(255, 255, 255, 0.03);
+    }
+
+    /* Footer buttons */
+    #meter-modal-inner .btn-secondary {
+        background: rgba(255, 255, 255, 0.08);
+        color: rgba(255, 255, 255, 0.75);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    #meter-modal-inner .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.14);
+    }
+</style>
 
 <style>
     .badge {
