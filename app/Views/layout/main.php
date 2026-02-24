@@ -22,6 +22,7 @@ if ($isAjax): ?>
                 <div class="nav-links">
                     <a href="/" class="btn">Lịch sử</a>
                     <a href="/meters" class="btn">Đồng hồ</a>
+                    <a href="/pricing" class="btn">Chi phí AI</a>
                     <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
                         <a href="/users" class="btn">Thành viên</a>
                     <?php endif; ?>

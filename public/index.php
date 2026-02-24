@@ -34,6 +34,9 @@ $router->add('GET', '/profile', 'UserController@profile');
 $router->add('GET', '/meters', 'MeterTypeController@index');
 $router->add('POST', '/meters/save', 'MeterTypeController@save');
 $router->add('POST', '/meters/delete', 'MeterTypeController@delete');
+$router->add('GET', '/pricing', 'GeminiPricingController@index');
+$router->add('POST', '/pricing/save', 'GeminiPricingController@save');
+$router->add('POST', '/pricing/delete', 'GeminiPricingController@delete');
 $router->add('GET', '/history/detail', 'HistoryController@detail');
 
 $method = $_SERVER['REQUEST_METHOD'];
