@@ -103,4 +103,91 @@ class MeterReadingLog
         $stmt->execute([$idData]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    /**
+     * Build WHERE clause from filters.
+     */
+    private static function buildWhere(array $filters): array
+    {
+        $where = [];
+        $params = [];
+
+        if (!empty($filters['model_name'])) {
+            $where[] = "l.model_name = ?";
+            $params[] = $filters['model_name'];
+        }
+        if (!empty($filters['trang_thai_api'])) {
+            $where[] = "l.trang_thai_api = ?";
+            $params[] = $filters['trang_thai_api'];
+        }
+        if (isset($filters['is_exact_match']) && $filters['is_exact_match'] !== '') {
+            $where[] = "l.is_exact_match = ?";
+            $params[] = (int) $filters['is_exact_match'];
+        }
+        if (isset($filters['is_rationality']) && $filters['is_rationality'] !== '') {
+            $where[] = "l.is_rationality = ?";
+            $params[] = (int) $filters['is_rationality'];
+        }
+        if (!empty($filters['muc_do_poc'])) {
+            $where[] = "l.muc_do_poc = ?";
+            $params[] = $filters['muc_do_poc'];
+        }
+        if (!empty($filters['muc_do_thuc_te'])) {
+            $where[] = "l.muc_do_thuc_te = ?";
+            $params[] = $filters['muc_do_thuc_te'];
+        }
+        if (!empty($filters['id_data'])) {
+            $where[] = "l.id_data = ?";
+            $params[] = (int) $filters['id_data'];
+        }
+        if (!empty($filters['date_from'])) {
+            $where[] = "l.created_at >= ?";
+            $params[] = $filters['date_from'] . ' 00:00:00';
+        }
+        if (!empty($filters['date_to'])) {
+            $where[] = "l.created_at <= ?";
+            $params[] = $filters['date_to'] . ' 23:59:59';
+        }
+
+        $sql = $where ? ' WHERE ' . implode(' AND ', $where) : '';
+        return [$sql, $params];
+    }
+
+    /**
+     * Get all logs with filters + pagination.
+     */
+    public static function all(array $filters = [], int $limit = 20, int $offset = 0): array
+    {
+        $db = Database::getInstance();
+        [$whereSql, $params] = self::buildWhere($filters);
+
+        $sql = "SELECT l.* FROM tn_meter_reading_log l{$whereSql} ORDER BY l.created_at DESC LIMIT {$limit} OFFSET {$offset}";
+        $stmt = $db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Count logs matching filters.
+     */
+    public static function count(array $filters = []): int
+    {
+        $db = Database::getInstance();
+        [$whereSql, $params] = self::buildWhere($filters);
+
+        $sql = "SELECT COUNT(*) FROM tn_meter_reading_log l{$whereSql}";
+        $stmt = $db->prepare($sql);
+        $stmt->execute($params);
+        return (int) $stmt->fetchColumn();
+    }
+
+    /**
+     * Get distinct model_name values for filter dropdown.
+     */
+    public static function distinctModels(): array
+    {
+        $db = Database::getInstance();
+        $stmt = $db->query("SELECT DISTINCT model_name FROM tn_meter_reading_log WHERE model_name IS NOT NULL ORDER BY model_name");
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
 }

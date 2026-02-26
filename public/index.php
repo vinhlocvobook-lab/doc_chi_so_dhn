@@ -41,6 +41,8 @@ $router->add('GET', '/history/detail', 'HistoryController@detail');
 $router->add('POST', '/history/update-meter-type', 'HistoryController@updateMeterType');
 $router->add('GET', '/history/ai-read', 'AiReadController@stream');
 $router->add('GET', '/history/ai-read-logs', 'AiReadController@logs');
+$router->add('GET', '/logs', 'LogController@index');
+$router->add('GET', '/logs/detail', 'LogController@detail');
 
 
 $method = $_SERVER['REQUEST_METHOD'];

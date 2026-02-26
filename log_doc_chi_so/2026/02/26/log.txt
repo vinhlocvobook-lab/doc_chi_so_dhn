@@ -43,3 +43,15 @@ Cost: 38.451488 VND
 Giải thích: The main cumulative water index is clearly displayed as '36539.14' on the digital screen. The integer part, representing whole cubic meters, is '36539'. No serial number is clearly visible on the meter's display or face.
 ============================================================
 
+============================================================
+[2026-02-26 11:10:04] ID: 85136 | SDB: 23061090835 | Model: gemini-2.5-flash
+Status: thanh_cong | Time: 7637ms
+AI Chi So: X | Parse: N/A
+Human Chi So: 5 | Match: ?
+Score POC: 0/100 [AI_KHONG_DAT_YEU_CAU]
+Score TT : 0/100 [TU_CHOI]
+Tokens: P=492 O=88 T=475
+Cost: 41.023538 VND
+Giải thích: The water meter is almost entirely obscured by dense dry branches and leaves. It is impossible to clearly identify any digits for the water index or the serial number.
+============================================================
+
