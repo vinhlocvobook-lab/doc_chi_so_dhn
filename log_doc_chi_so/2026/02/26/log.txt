@@ -1,0 +1,45 @@
+============================================================
+[2026-02-26 08:42:17] [TEST] ID: 85137 | SDB: 23061091000 | Model: gemini-flash-lite-latest
+Status: loi_api | Time: 55380ms | Log ID: #10
+AI Chi So: N/A | Parse: N/A
+Human Chi So: 36539 | Match: ?
+Score POC: 0/100 [AI_KHONG_DAT_YEU_CAU]
+Score TT : 0/100 [TU_CHOI]
+Tokens: P=0 O=0 T=0
+Cost: 0.000000 VND
+============================================================
+
+============================================================
+[2026-02-26 08:44:56] [TEST] ID: 85137 | SDB: 23061091000 | Model: gemini-flash-lite-latest
+Status: thanh_cong | Time: 2890ms | Log ID: #11
+AI Chi So: 36539.14 | Parse: 36539
+Human Chi So: 36539 | Match: 1
+Score POC: 100/100 [AI_CHINH_XAC_CAO]
+Score TT : 80/100 [TU_DONG_CHAP_NHAN]
+Tokens: P=492 O=136 T=0
+Cost: 2.732968 VND
+============================================================
+
+============================================================
+[2026-02-26 10:51:05] [TEST] ID: 85137 | SDB: 23061091000 | Model: gemini-flash-lite-latest
+Status: thanh_cong | Time: 15147ms | Log ID: #12
+AI Chi So: 36539.14 | Parse: 36539
+Human Chi So: 36539 | Match: 1
+Score POC: 100/100 [AI_CHINH_XAC_CAO]
+Score TT : 80/100 [TU_DONG_CHAP_NHAN]
+Tokens: P=492 O=110 T=0
+Cost: 2.458616 VND
+============================================================
+
+============================================================
+[2026-02-26 11:04:15] ID: 85137 | SDB: 23061091000 | Model: gemini-2.5-flash
+Status: thanh_cong | Time: 5186ms
+AI Chi So: 36539.14 | Parse: 36539
+Human Chi So: 36539 | Match: 1
+Score POC: 100/100 [AI_CHINH_XAC_CAO]
+Score TT : 80/100 [TU_DONG_CHAP_NHAN]
+Tokens: P=492 O=127 T=397
+Cost: 38.451488 VND
+Giải thích: The main cumulative water index is clearly displayed as '36539.14' on the digital screen. The integer part, representing whole cubic meters, is '36539'. No serial number is clearly visible on the meter's display or face.
+============================================================
+

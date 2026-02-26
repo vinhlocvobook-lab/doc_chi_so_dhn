@@ -39,6 +39,8 @@ $router->add('POST', '/pricing/save', 'GeminiPricingController@save');
 $router->add('POST', '/pricing/delete', 'GeminiPricingController@delete');
 $router->add('GET', '/history/detail', 'HistoryController@detail');
 $router->add('POST', '/history/update-meter-type', 'HistoryController@updateMeterType');
+$router->add('GET', '/history/ai-read', 'AiReadController@stream');
+$router->add('GET', '/history/ai-read-logs', 'AiReadController@logs');
 
 
 $method = $_SERVER['REQUEST_METHOD'];

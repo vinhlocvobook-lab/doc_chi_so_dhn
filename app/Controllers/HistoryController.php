@@ -39,12 +39,17 @@ class HistoryController extends Controller
         $meterModel = new \App\Models\MeterType();
         $meterTypes = $meterModel->all();
 
+        // Pass LLM models for AI read selector
+        $pricingModel = new \App\Models\GeminiPricing();
+        $llmModels = $pricingModel->all();
+
         $this->view('history/index', [
             'history' => $history,
             'page' => $page,
             'totalPages' => $totalPages,
             'filters' => $filters,
             'meterTypes' => $meterTypes,
+            'llmModels' => $llmModels,
         ]);
     }
 

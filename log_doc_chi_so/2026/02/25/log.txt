@@ -1,0 +1,77 @@
+============================================================
+[2026-02-25 03:41:21] ID: 85137 | SDB: 23061091000 | Model: gemini-2.5-flash-lite
+Status: thanh_cong | Time: 3449ms
+AI Chi So: 36539.14 | Parse: 3653914
+Human Chi So: 36539 | Match: 0
+Tokens: P=377 O=168 T=0
+Cost: 2,075.45 VND
+Giải thích: Chỉ số chính hiển thị lưu lượng nước đã sử dụng là 36539.14 (đơn vị có thể là m3 hoặc các đơn vị khác tùy theo cài đặt). Dòng thứ hai có thể hiển thị lưu lượng tức thời hoặc một chỉ số khác, ở đây là 2505.1 m/h (mét trên giờ).
+============================================================
+
+============================================================
+[2026-02-25 03:42:01] ID: 85137 | SDB: 23061091000 | Model: gemini-2.5-flash-lite
+Status: loi_api | Time: 3248ms
+Error: Lỗi HTTP 503: This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.
+============================================================
+
+============================================================
+[2026-02-25 03:42:19] ID: 85137 | SDB: 23061091000 | Model: gemini-2.5-flash-lite
+Status: thanh_cong | Time: 4148ms
+AI Chi So: 36539.14 | Parse: 3653914
+Human Chi So: 36539 | Match: 0
+Tokens: P=377 O=135 T=0
+Cost: 1,814.28 VND
+Giải thích: Chỉ số đồng hồ nước hiện tại là 36539.14 m³. Phần nguyên là 36539 và phần thập phân là 14.
+============================================================
+
+============================================================
+[2026-02-25 03:43:31] ID: 85137 | SDB: 23061091000 | Model: gemini-2.5-flash-lite
+Status: loi_api | Time: 4829ms
+Error: Lỗi HTTP 503: This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.
+============================================================
+
+============================================================
+[2026-02-25 05:45:14] [TEST] ID: 4 | SDB: 23011010008 | Model: gemini-2.5-flash
+Status: thanh_cong | Time: 10382ms | Log ID: #5
+AI Chi So: 127.0 | Parse: 1270
+Human Chi So: 1270 | Match: 1
+Tokens: P=377 O=189 T=1116
+Cost: 0.00 VND
+============================================================
+
+============================================================
+[2026-02-25 06:30:23] [TEST] ID: 85137 | SDB: 23061091000 | Model: gemini-2.5-flash
+Status: thanh_cong | Time: 9516ms | Log ID: #6
+AI Chi So: 36539.14 | Parse: 3653914
+Human Chi So: 36539 | Match: 0
+Tokens: P=388 O=200 T=1118
+Cost: 0.00 VND
+============================================================
+
+============================================================
+[2026-02-25 10:42:34] [TEST] ID: 85137 | SDB: 23061091000 | Model: gemini-flash-lite-latest
+Status: thanh_cong | Time: 4767ms | Log ID: #7
+AI Chi So: 36539.14 | Parse: 3653914
+Human Chi So: 36539 | Match: 0
+Tokens: P=549 O=129 T=0
+Cost: 2,809,470.00 VND
+============================================================
+
+============================================================
+[2026-02-25 10:47:48] [TEST] ID: 85137 | SDB: 23061091000 | Model: gemini-flash-lite-latest
+Status: thanh_cong | Time: 2610ms | Log ID: #8
+AI Chi So: 36539.14 | Parse: 36539
+Human Chi So: 36539 | Match: 1
+Tokens: P=549 O=109 T=0
+Cost: 2,598,430.00 VND
+============================================================
+
+============================================================
+[2026-02-25 10:50:38] [TEST] ID: 85137 | SDB: 23061091000 | Model: gemini-flash-lite-latest
+Status: thanh_cong | Time: 10081ms | Log ID: #9
+AI Chi So: 36539.14 | Parse: 36539
+Human Chi So: 36539 | Match: 1
+Tokens: P=549 O=112 T=0
+Cost: 2,630,086.00 VND
+============================================================
+
