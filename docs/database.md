@@ -67,6 +67,8 @@ users ── quản lý người dùng / reviewer
 | `model_name` | varchar(100) | Tên model Gemini được chọn (ví dụ: `gemini-flash-lite-latest`) |
 | `prompt_version` | varchar(20) | Phiên bản prompt (ví dụ: `1.0`, `1.0-test`) |
 | `prompt_text` | text | Nội dung prompt đầy đủ gửi cho AI |
+| `img_dhn` | varchar(500) | Đường dẫn lưu ảnh nội bộ (ví dụ: `img_dhn/2026/02/27/meter_123.jpg`) |
+| `linkHinhDongHo` | varchar(500) | URL ảnh gốc từ hệ thống CAWACO |
 | `created_at` | timestamp | Thời gian tạo (auto) |
 
 ### Nhóm 2: Kết quả AI
@@ -357,4 +359,4 @@ ORDER BY ngay DESC;
 
 ---
 
-*Cập nhật lần cuối: 2026-02-26 | Người viết: AI Assistant*
+*Cập nhật lần cuối: 2026-02-27 | Người viết: AI Assistant*

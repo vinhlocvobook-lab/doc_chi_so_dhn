@@ -166,7 +166,22 @@ Trả về JSON danh sách log quá khứ cho một bản ghi.
 
 ---
 
-### 3.3 `MeterTypeController`
+### 3.3 `LogController` — Quản lý Log AI & Image Stream
+
+Đây là trang Dành riêng cho việc xem lại các quyết định của AI, filter theo mức độ hợp lý, model, và thời gian.
+
+| Action | Route | Chức năng |
+|------|------|------|
+| `index()` | GET `/logs` | Liệt kê log AI đọc (mới nhất lên trước) có phân trang. |
+| `detail()` | GET `/logs/detail?id=X` | JSON chi tiết 1 lần AI đọc, điểm số và lý do. |
+| `image()` | GET `/logs/image?path=...` | Stream file ảnh từ thư mục private `img_dhn/`. |
+
+**Bảo mật hình ảnh (Secure Image Streaming):**
+Hình ảnh lấy về từ CAWACO không được lưu public. Chúng được lưu trong thư mục `img_dhn/` ở thư mục gốc (nằm ngoài thư mục `public/`). `LogController@image` kiểm tra login session và chặn directory traversal attacks trước khi `readfile()` hình ảnh ra cho người dùng.
+
+---
+
+### 3.4 `MeterTypeController`
 
 CRUD bảng `loai_dhn`.  
 **Quan trọng:** Trường `la_mac_dinh` dùng UNIQUE constraint với giá trị `1` hoặc `NULL` (không phải `0`). Logic xử lý trong `MeterType::create()` và `update()`.
@@ -253,6 +268,11 @@ $record = History::findById($id);
 History::updateMeterType($id, $loaiDongHo_new);
 History::bulkUpdateMeterType($soDanhBo, $loaiDongHo_new);
 ```
+
+---
+
+### 4.4 `MeterType.php`, `GeminiPricing.php`, `User.php`
+Các model này chủ yếu cung cấp phương thức tĩnh để CRUD và lookup (ví dụ: lấy giá model gần nhất, tìm user theo username).
 
 ---
 
@@ -376,13 +396,24 @@ Logic parse chỉ số AI nằm trong cả `AiReadController::stream()` và `tes
 
 ---
 
-## 8. Logging
+## 8. Logging & Storage
 
 ### 8.1 Database Log (`tn_meter_reading_log`)
-Mỗi lần gọi AI đều insert 1 bản ghi, kể cả khi lỗi.  
+Mỗi lần gọi AI đều insert 1 bản ghi, lưu kèm đường dẫn gốc (`linkHinhDongHo`) và đường dẫn lưu trữ nội bộ (`img_dhn`).  
 → Xem schema chi tiết: [database.md](./database.md)
 
-### 8.2 File Log (`log_doc_chi_so/`)
+### 8.2 Image Storage (`img_dhn/`)
+Hình ảnh tải về được lưu theo cấu trúc ngày để không vượt quá giới hạn file/thư mục của HĐH:
+```
+img_dhn/
+└── YYYY/
+    └── MM/
+        └── DD/
+            └── meter_{ID}_{TIMESTAMP}.jpg
+```
+*Lưu ý: Thư mục này nằm ngoài `public/` để bảo đảm tính riêng tư. UI gọi qua `/logs/image?path=...`.*
+
+### 8.3 File Log (`log_doc_chi_so/`)
 ```
 log_doc_chi_so/
 └── 2026/
@@ -578,13 +609,13 @@ VALUES ('gemini-new-model', 0.20, 0.80, 1000000);
 
 ## 15. Công việc Đang Dở / TODO tiếp theo
 
-- [x] ~~**Tích hợp `WaterMeterRationalityChecker` vào `AiReadController`**~~ — **Hoàn thành.** Class đã chuyển lên `app/Services/` (namespace `App\Services`). `AiReadController::stream()` đã tích hợp đầy đủ: char accuracy, rationality check, score POC và score Thực tế.
+- [x] ~~**Tích hợp `WaterMeterRationalityChecker` vào `AiReadController`**~~ — Hoàn thành. Class đã chuyển lên `app/Services/`.
+- [x] ~~**Lưu trữ hình ảnh nội bộ & UI Log AI**~~ — Hoàn thành. Lưu `img_dhn` an toàn và trang `/logs` giúp tra cứu.
 - [ ] **Prompt per meter type**: khi AI read, nên lấy `last_prompt_txt` từ `loai_dhn` tương ứng thay vì dùng prompt cứng
 - [ ] **Retry logic**: khi API fail, thử lại với model khác từ `last_llm_models` list
-- [ ] **Review UI**: giao diện để reviewer xem và accept/reject kết quả AI
 - [ ] **Báo cáo thống kê**: trang `/report` tổng hợp accuracy theo model/tháng/loại đồng hồ
 - [ ] **Tỷ giá dynamic**: cập nhật tỷ giá USD/VND từ API thay vì hardcode
 
 ---
 
-*Cập nhật lần cuối: 2026-02-26 | Tài liệu này tổng hợp toàn bộ codebase tại thời điểm review.*
+*Cập nhật lần cuối: 2026-02-27 | Tài liệu này tổng hợp toàn bộ codebase tại thời điểm review.*

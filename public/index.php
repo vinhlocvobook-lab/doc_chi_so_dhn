@@ -43,7 +43,8 @@ $router->add('GET', '/history/ai-read', 'AiReadController@stream');
 $router->add('GET', '/history/ai-read-logs', 'AiReadController@logs');
 $router->add('GET', '/logs', 'LogController@index');
 $router->add('GET', '/logs/detail', 'LogController@detail');
-
+$router->add('GET', '/logs/image', 'LogController@image');
+$router->add('GET', '/logs/dashboard', 'LogController@dashboard');
 
 $method = $_SERVER['REQUEST_METHOD'];
 $uri = $_SERVER['REQUEST_URI'];

@@ -1,0 +1,44 @@
+============================================================
+[2026-02-27 01:57:27] [TEST] ID: 85137 | SDB: 23061091000 | Model: gemini-2.5-flash
+Status: thanh_cong | Time: 9079ms | Log ID: #18
+AI Chi So: 36539.14 | Parse: 36539
+Human Chi So: 36539 | Match: 1
+Score POC: 100/100 [AI_CHINH_XAC_CAO]
+Score TT : 80/100 [TU_DONG_CHAP_NHAN]
+Tokens: P=492 O=112 T=575
+Cost: 49.201338 VND
+============================================================
+
+============================================================
+[2026-02-27 03:59:14] ID: 85137 | SDB: 23061091000 | Model: gemini-3.1-pro-preview
+Status: loi_api | Time: 528ms
+Error: Lỗi HTTP 429: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. 
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-3.1-pro
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-3.1-pro
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-3.1-pro
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-3.1-pro
+Please retry in 45.811784743s.
+============================================================
+
+============================================================
+[2026-02-27 03:59:55] ID: 85137 | SDB: 23061091000 | Model: gemini-3-pro-preview
+Status: loi_api | Time: 367ms
+Error: Lỗi HTTP 429: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. 
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-3-pro
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-3-pro
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-3-pro
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-3-pro
+Please retry in 4.629785106s.
+============================================================
+
+============================================================
+[2026-02-27 04:00:06] ID: 85137 | SDB: 23061091000 | Model: gemini-2.5-pro
+Status: loi_api | Time: 1154ms
+Error: Lỗi HTTP 429: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. 
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.5-pro
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.5-pro
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.5-pro
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.5-pro
+Please retry in 53.390391501s.
+============================================================
+

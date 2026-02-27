@@ -79,16 +79,25 @@ class AiReadController extends Controller
         $this->sse('progress', ['step' => 'downloading_image', 'label' => '⬇️ Đang tải hình ảnh đồng hồ...']);
 
         $imageUrl = $record['linkHinhDongHo'];
-        $tempDir = sys_get_temp_dir();
+        $dateObj = new \DateTime();
+        $datePath = $dateObj->format('Y/m/d');
+        $imgDir = __DIR__ . '/../../img_dhn/' . $datePath;
+
+        if (!is_dir($imgDir)) {
+            mkdir($imgDir, 0777, true);
+        }
+
         $ext = pathinfo(parse_url($imageUrl, PHP_URL_PATH), PATHINFO_EXTENSION) ?: 'jpg';
-        $tempImage = $tempDir . '/meter_' . $id . '_' . time() . '.' . $ext;
+        $filename = 'meter_' . $id . '_' . time() . '.' . $ext;
+        $targetPath = $imgDir . '/' . $filename;
+        $relativeImgPath = 'img_dhn/' . $datePath . '/' . $filename;
 
         $imgData = @file_get_contents($imageUrl);
         if ($imgData === false) {
             $this->sse('error_event', ['message' => "Không thể tải hình ảnh từ: {$imageUrl}"]);
             return;
         }
-        file_put_contents($tempImage, $imgData);
+        file_put_contents($targetPath, $imgData);
 
         $this->sse('progress', [
             'step' => 'image_downloaded',
@@ -106,13 +115,11 @@ class AiReadController extends Controller
 
         try {
             $gemini = new Gemini();
-            $result = $gemini->prompt_image($tempImage, $promptText, $modelName);
+            $result = $gemini->prompt_image($targetPath, $promptText, $modelName);
         } catch (\Exception $e) {
             $trangThai = 'loi_api';
             $thongBaoLoi = $e->getMessage();
             $this->sse('progress', ['step' => 'api_error', 'label' => '❌ Lỗi API: ' . $e->getMessage()]);
-        } finally {
-            @unlink($tempImage);
         }
 
         $apiCompletedAt = date('Y-m-d H:i:s');
@@ -128,6 +135,8 @@ class AiReadController extends Controller
                 'api_started_at' => $apiStartedAt,
                 'api_completed_at' => $apiCompletedAt,
                 'thoi_gian_xu_ly' => $thoiGianXuLy,
+                'img_dhn' => $relativeImgPath,
+                'linkHinhDongHo' => $imageUrl,
             ];
             try {
                 MeterReadingLog::create($logData);
@@ -301,6 +310,8 @@ class AiReadController extends Controller
             'score_doc_duoc' => $scoreTT['score_doc_duoc'],
             'score_thuc_te' => $scoreTT['score_thuc_te'],
             'muc_do_thuc_te' => $scoreTT['muc_do_thuc_te'],
+            'img_dhn' => $relativeImgPath,
+            'linkHinhDongHo' => $imageUrl,
         ];
 
         $logId = 0;

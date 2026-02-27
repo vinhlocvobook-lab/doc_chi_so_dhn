@@ -1,7 +1,7 @@
 # 📋 Tổng quan Dự án: Water Meter AI Reader
 
 **Tên project:** `readdb_water_meter1meter`  
-**Phiên bản tài liệu:** 2026-02-26  
+**Phiên bản tài liệu:** 2026-02-27  
 **Mục tiêu:** Đọc tự động chỉ số đồng hồ nước bằng AI (Google Gemini), đánh giá độ chính xác và lưu log để phục vụ vận hành thực tế cho CAWACO Cần Giờ.
 
 ---
@@ -25,9 +25,9 @@ Nhân viên đọc đồng hồ nước hiện nay chụp ảnh đồng hồ và
 │                    Web Application                       │
 │              PHP MVC + SPA (Vanilla JS)                  │
 │  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌─────────┐ │
-│  │ History  │  │ Meters   │  │ Pricing  │  │  Auth   │ │
-│  │ (chisodhn│  │(loai_dhn)│  │(gemini_  │  │ (users) │ │
-│  │ viewer)  │  │  CRUD)   │  │ pricing) │  │         │ │
+│  │ History  │  │ Meters   │  │ Pricing  │  │ AI Logs │ │
+│  │ (chisodhn│  │(loai_dhn)│  │(gemini_  │  │ (Logs   │ │
+│  │ viewer)  │  │  CRUD)   │  │ pricing) │  │ viewer) │ │
 │  └──────────┘  └──────────┘  └──────────┘  └─────────┘ │
 │                     ▼ SSE Stream                         │
 │              ┌──────────────┐                            │
@@ -100,6 +100,11 @@ Nhân viên đọc đồng hồ nước hiện nay chụp ảnh đồng hồ và
 - Inline detail: click mở rộng hàng, xem ảnh, lịch sử AI đọc
 - Cập nhật `loaiDongHo_new` theo lô (bulk update cùng số danh bộ)
 
+### 4.7 Quản lý Log AI & Phân tích
+- Trang danh sách log các lần AI đọc (`tn_meter_reading_log`).
+- Xem chi tiết từng log: so sánh AI vs Nhân viên, chấm điểm độ lệch, xem Raw JSON.
+- **Lưu trữ hình ảnh an toàn**: Hình ảnh đồng hồ nước được lưu vĩnh viễn trong thư mục riêng tư `img_dhn/YYYY/MM/DD/` và chỉ có thể truy cập qua route xác thực `/logs/image`, bảo vệ tính riêng tư của dữ liệu người dùng.
+
 ---
 
 ## 5. Cấu trúc Thư mục
@@ -122,6 +127,7 @@ readdb_water_meter1meter/
 │   │   ├── HistoryController.php     ← index, detail, updateMeterType
 │   │   ├── MeterTypeController.php   ← CRUD loai_dhn
 │   │   ├── GeminiPricingController.php ← CRUD gemini_pricing
+│   │   ├── LogController.php         ← Quản lý Log AI & Image stream
 │   │   ├── AuthController.php        ← login/logout
 │   │   └── UserController.php        ← index/profile
 │   ├── Models/
@@ -146,6 +152,7 @@ readdb_water_meter1meter/
 │   ├── developer-guide.md      ← Hướng dẫn phát triển chi tiết
 │   └── database.md             ← Schema chi tiết toàn bộ DB
 ├── log_doc_chi_so/             ← Log file theo YYYY/MM/DD/log.txt
+├── img_dhn/                    ← Thư mục lưu ảnh phân giải (Private)
 ├── test_ai_read.php            ← CLI test suite (11 test cases)
 ├── test_ai_read_my_debug_1.0.php ← Debug version cũ
 ├── migrate_pricing.php         ← Tạo bảng gemini_pricing
@@ -213,6 +220,9 @@ Test suite chạy 11 test cases bao gồm: API key check → init Gemini → fet
 | POST | `/history/update-meter-type` | HistoryController@updateMeterType | Cập nhật loại đồng hồ |
 | GET | `/history/ai-read` | AiReadController@stream | SSE stream đọc AI |
 | GET | `/history/ai-read-logs` | AiReadController@logs | Lịch sử log AI (JSON) |
+| GET | `/logs` | LogController@index | Trang quản lý AI Logs |
+| GET | `/logs/detail` | LogController@detail | JSON chi tiết 1 log AI |
+| GET | `/logs/image` | LogController@image | Stream ảnh nội bộ bảo mật |
 | GET | `/users` | UserController@index | Danh sách user (admin) |
 | GET | `/profile` | UserController@profile | Hồ sơ cá nhân |
 

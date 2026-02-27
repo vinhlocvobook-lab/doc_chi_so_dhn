@@ -55,3 +55,38 @@ Cost: 41.023538 VND
 Giải thích: The water meter is almost entirely obscured by dense dry branches and leaves. It is impossible to clearly identify any digits for the water index or the serial number.
 ============================================================
 
+============================================================
+[2026-02-26 12:09:06] [TEST] ID: 85137 | SDB: 23061091000 | Model: gemini-2.0-flash-exp
+Status: loi_api | Time: 1155ms | Log ID: #15
+AI Chi So: N/A | Parse: N/A
+Human Chi So: 36539 | Match: ?
+Score POC: 0/100 [AI_KHONG_DAT_YEU_CAU]
+Score TT : 0/100 [TU_CHOI]
+Tokens: P=0 O=0 T=0
+Cost: 0.000000 VND
+============================================================
+
+============================================================
+[2026-02-26 12:23:09] ID: 85064 | SDB: 23051160100 | Model: gemini-2.5-flash
+Status: thanh_cong | Time: 13578ms
+AI Chi So: 15603950 | Parse: 1560395
+Human Chi So: 15603 | Match: 0
+Score POC: 0/100 [AI_KHONG_DAT_YEU_CAU]
+Score TT : 30/100 [TU_CHOI]
+Tokens: P=492 O=175 T=1681
+Cost: 126.296888 VND
+Giải thích: The main cumulative water index displayed on the meter is 15603950. Following the instruction to convert to an integer number of cubic meters by removing any decimal or fractional digits, and considering that the meter shows more than 7 digits, the last digit ('0') is interpreted as a fractional part (commonly 0.1 cubic meters). Therefore, the integer part representing whole cubic meters is 1560395. No clear serial number was identified as per the instruction to ignore small text.
+============================================================
+
+============================================================
+[2026-02-26 12:27:38] ID: 85064 | SDB: 23051160100 | Model: gemini-2.5-flash
+Status: thanh_cong | Time: 12922ms
+AI Chi So: 15603950 | Parse: 15603
+Human Chi So: 15603 | Match: 1
+Score POC: 100/100 [AI_CHINH_XAC_CAO]
+Score TT : 100/100 [TU_DONG_CHAP_NHAN]
+Tokens: P=496 O=120 T=1573
+Cost: 115.578694 VND
+Giải thích: The main cumulative water index displayed on the screen is '15603950'. Following the instruction to extract the five first digits as the integer part, '15603' is identified. No serial number is visible in the provided image.
+============================================================
+

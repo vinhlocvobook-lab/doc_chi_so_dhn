@@ -24,6 +24,7 @@ if ($isAjax): ?>
                     <a href="/meters" class="btn">Đồng hồ</a>
                     <a href="/pricing" class="btn">Chi phí AI</a>
                     <a href="/logs" class="btn">Log AI</a>
+                    <a href="/logs/dashboard" class="btn" style="color: #60a5fa; font-weight: bold;">Dashboard AI</a>
                     <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
                         <a href="/users" class="btn">Thành viên</a>
                     <?php endif; ?>

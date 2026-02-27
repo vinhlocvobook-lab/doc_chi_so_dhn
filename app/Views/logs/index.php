@@ -117,8 +117,26 @@ function getScoreColor($score, $type = 'poc')
 
         <div class="filter-group">
             <label>ID Data</label>
-            <input type="text" name="id_data" class="filter-input" placeholder="ID bản ghi gốc..."
-                value="<?= htmlspecialchars($filters['id_data']) ?>" style="width: 100px;">
+            <input type="text" name="id_data" class="filter-input" placeholder="ID gốc..."
+                value="<?= htmlspecialchars($filters['id_data']) ?>" style="width: 80px;">
+        </div>
+
+        <div class="filter-group">
+            <label>Danh bộ</label>
+            <input type="text" name="soDanhBo" class="filter-input" placeholder="Số danh bộ..."
+                value="<?= htmlspecialchars($filters['soDanhBo']) ?>" style="width: 120px;">
+        </div>
+
+        <div class="filter-group">
+            <label>Loại đồng hồ</label>
+            <select name="loaiDongHo_new" class="filter-input">
+                <option value="">Tất cả</option>
+                <?php foreach ($distinctMeterTypes as $type): ?>
+                    <option value="<?= htmlspecialchars($type) ?>" <?= $filters['loaiDongHo_new'] === $type ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($type) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
         </div>
 
         <div class="filter-group">
@@ -137,22 +155,74 @@ function getScoreColor($score, $type = 'poc')
     </form>
 
     <!-- Data Table -->
+    <?php
+    // Helper: build sort URL preserving current filters
+    function sortUrl(string $col, string $currentSort, string $currentDir): string
+    {
+        $params = $_GET;
+        $params['sort_by'] = $col;
+        $params['sort_dir'] = ($currentSort === $col && $currentDir === 'ASC') ? 'DESC' : 'ASC';
+        $params['page'] = 1; // reset page on sort change
+        return '/logs?' . http_build_query($params);
+    }
+    function sortIcon(string $col, string $currentSort, string $currentDir): string
+    {
+        if ($currentSort !== $col)
+            return '<span style="opacity:0.3;">⇅</span>';
+        return $currentDir === 'ASC' ? '▲' : '▼';
+    }
+    ?>
+    <style>
+        .sort-link {
+            color: inherit;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .sort-link:hover {
+            color: #4f46e5;
+        }
+
+        .sort-link .sort-arrow {
+            font-size: 0.7rem;
+        }
+    </style>
     <div class="glass-card" style="overflow-x: auto;">
         <table class="data-table">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>ID Data</th>
-                    <th>Model</th>
-                    <th>AI đọc</th>
-                    <th>Human</th>
-                    <th>Khớp</th>
-                    <th>Score POC</th>
-                    <th>Score TT</th>
-                    <th>Chi phí</th>
-                    <th>Thời gian</th>
-                    <th>Trạng thái</th>
-                    <th>Ngày tạo</th>
+                    <th><a href="<?= sortUrl('id', $sortBy, $sortDir) ?>" class="sort-link">ID <span
+                                class="sort-arrow"><?= sortIcon('id', $sortBy, $sortDir) ?></span></a></th>
+                    <th><a href="<?= sortUrl('id_data', $sortBy, $sortDir) ?>" class="sort-link">ID Data <span
+                                class="sort-arrow"><?= sortIcon('id_data', $sortBy, $sortDir) ?></span></a></th>
+                    <th>Danh bộ</th>
+                    <th>Loại đồng hồ</th>
+                    <th><a href="<?= sortUrl('model_name', $sortBy, $sortDir) ?>" class="sort-link">Model <span
+                                class="sort-arrow"><?= sortIcon('model_name', $sortBy, $sortDir) ?></span></a></th>
+                    <th><a href="<?= sortUrl('ai_chi_so_parse', $sortBy, $sortDir) ?>" class="sort-link">AI đọc <span
+                                class="sort-arrow"><?= sortIcon('ai_chi_so_parse', $sortBy, $sortDir) ?></span></a></th>
+                    <th><a href="<?= sortUrl('human_chi_so', $sortBy, $sortDir) ?>" class="sort-link">Human <span
+                                class="sort-arrow"><?= sortIcon('human_chi_so', $sortBy, $sortDir) ?></span></a></th>
+                    <th><a href="<?= sortUrl('is_exact_match', $sortBy, $sortDir) ?>" class="sort-link">Khớp <span
+                                class="sort-arrow"><?= sortIcon('is_exact_match', $sortBy, $sortDir) ?></span></a></th>
+                    <th><a href="<?= sortUrl('is_rationality', $sortBy, $sortDir) ?>" class="sort-link">Hợp lý <span
+                                class="sort-arrow"><?= sortIcon('is_rationality', $sortBy, $sortDir) ?></span></a></th>
+                    <th><a href="<?= sortUrl('score_poc', $sortBy, $sortDir) ?>" class="sort-link">Score POC <span
+                                class="sort-arrow"><?= sortIcon('score_poc', $sortBy, $sortDir) ?></span></a></th>
+                    <th><a href="<?= sortUrl('score_thuc_te', $sortBy, $sortDir) ?>" class="sort-link">Score TT <span
+                                class="sort-arrow"><?= sortIcon('score_thuc_te', $sortBy, $sortDir) ?></span></a></th>
+                    <th><a href="<?= sortUrl('chi_phi_vnd', $sortBy, $sortDir) ?>" class="sort-link">Chi phí <span
+                                class="sort-arrow"><?= sortIcon('chi_phi_vnd', $sortBy, $sortDir) ?></span></a></th>
+                    <th><a href="<?= sortUrl('thoi_gian_xu_ly', $sortBy, $sortDir) ?>" class="sort-link">Thời gian <span
+                                class="sort-arrow"><?= sortIcon('thoi_gian_xu_ly', $sortBy, $sortDir) ?></span></a></th>
+                    <th><a href="<?= sortUrl('trang_thai_api', $sortBy, $sortDir) ?>" class="sort-link">Trạng thái <span
+                                class="sort-arrow"><?= sortIcon('trang_thai_api', $sortBy, $sortDir) ?></span></a></th>
+                    <th><a href="<?= sortUrl('created_at', $sortBy, $sortDir) ?>" class="sort-link">Ngày tạo <span
+                                class="sort-arrow"><?= sortIcon('created_at', $sortBy, $sortDir) ?></span></a></th>
                     <th>Thao tác</th>
                 </tr>
             </thead>
@@ -169,10 +239,18 @@ function getScoreColor($score, $type = 'poc')
                                 <?= $log['id'] ?>
                             </strong></td>
                         <td>
-                            <a href="/?filter=1&soDanhBo=&nam=&thang=&loaiDongHo=&loaiDongHo_new="
+                            <a href="/?filter=1&soDanhBo=<?= urlencode($log['soDanhBo'] ?? '') ?>&nam=&thang=&loaiDongHo=&loaiDongHo_new="
                                 style="color: #4338ca; text-decoration: none; font-weight:600;" title="Xem bản ghi gốc">#
                                 <?= $log['id_data'] ?>
                             </a>
+                        </td>
+                        <td style="font-weight: 600; color: #334155;">
+                            <?= htmlspecialchars($log['soDanhBo'] ?? '—') ?>
+                        </td>
+                        <td>
+                            <span style="font-size:0.75rem; padding:2px 6px; background:#f1f5f9; color:#475569; border:1px solid #cbd5e1; border-radius:4px;">
+                                <?= htmlspecialchars($log['loaiDongHo_new'] ?? '—') ?>
+                            </span>
                         </td>
                         <td>
                             <span
@@ -181,11 +259,11 @@ function getScoreColor($score, $type = 'poc')
                             </span>
                         </td>
                         <td style="font-weight: 700; color: #4338ca;">
-                            <?= htmlspecialchars($log['ai_chi_so'] ?? '—') ?>
-                            <?php if ($log['ai_chi_so_parse'] !== null && $log['ai_chi_so_parse'] != $log['ai_chi_so']): ?>
-                                <div style="font-size:0.7rem; color:#64748b; font-weight:400;">
-                                    Parse:
-                                    <?= $log['ai_chi_so_parse'] ?>
+                            <?= htmlspecialchars($log['ai_chi_so_parse'] ?? '—') ?>
+                            <?php if ($log['ai_chi_so'] !== null && $log['ai_chi_so'] != $log['ai_chi_so_parse']): ?>
+                                <div style="font-size:0.7rem; color:#64748b; font-weight:400;" title="Raw AI response">
+                                    Raw:
+                                    <?= htmlspecialchars($log['ai_chi_so']) ?>
                                 </div>
                             <?php endif; ?>
                         </td>
@@ -201,6 +279,16 @@ function getScoreColor($score, $type = 'poc')
                                 <span style="color:#dc2626; font-weight:600;" title="Sai số: <?= $log['sai_so'] ?>">❌
                                     <?= $log['sai_so'] ?>
                                 </span>
+                            <?php endif; ?>
+                        </td>
+                        <td>
+                            <?php if ($log['is_rationality'] === null): ?>
+                                <span style="color:#64748b;">—</span>
+                            <?php elseif ($log['is_rationality'] == 1): ?>
+                                <span style="color:#15803d; font-weight:600;" title="Hợp lý">✅</span>
+                            <?php else: ?>
+                                <span style="color:#c2410c; font-weight:600;"
+                                    title="Bất hợp lý: <?= htmlspecialchars($log['ly_do_bat_hop_ly'] ?? '') ?>">⚠️</span>
                             <?php endif; ?>
                         </td>
                         <td>
@@ -405,13 +493,27 @@ function getScoreColor($score, $type = 'poc')
             <span style="color:rgba(255,255,255,0.35); font-size:0.78rem;">${val(l.created_at)}</span>
         </div>`;
 
+            // Image Display
+            const displayImg = l.img_dhn ? '/logs/image?path=' + encodeURIComponent(l.img_dhn) : l.linkHinhDongHo;
+            if (displayImg) {
+                html += `
+            <div style="margin-bottom:1.5rem; text-align:center; background:rgba(0,0,0,0.2); border-radius:12px; padding:10px; border:1px solid rgba(255,255,255,0.05);">
+                <img src="${displayImg}" alt="Water Meter" 
+                     style="max-width:100%; max-height:300px; border-radius:8px; cursor:pointer; object-fit:contain;"
+                     onclick="window.open('${displayImg}', '_blank')">
+                <div style="font-size:0.7rem; color:rgba(255,255,255,0.3); margin-top:5px;">
+                    ${l.img_dhn ? '📁 Lưu trữ nội bộ' : '🌐 Link gốc'} (Click để phóng to)
+                </div>
+            </div>`;
+            }
+
             // AI vs Human comparison
             html += `
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
             <div style="padding:1rem; background:rgba(139,92,246,0.08); border:1px solid rgba(139,92,246,0.2); border-radius:12px; text-align:center;">
                 <div style="color:rgba(255,255,255,0.4); font-size:0.7rem; text-transform:uppercase; letter-spacing:0.05em;">AI Đọc được</div>
-                <div style="font-size:1.8rem; font-weight:800; color:#c4b5fd; margin:4px 0;">${val(l.ai_chi_so, 'N/A')}</div>
-                <div style="font-size:0.75rem; color:rgba(255,255,255,0.4);">Parse: ${val(l.ai_chi_so_parse, 'N/A')}</div>
+                <div style="font-size:1.8rem; font-weight:800; color:#c4b5fd; margin:4px 0;">${val(l.ai_chi_so_parse, 'N/A')}</div>
+                <div style="font-size:0.75rem; color:rgba(255,255,255,0.4);">Raw: ${val(l.ai_chi_so, 'N/A')}</div>
             </div>
             <div style="padding:1rem; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:12px; text-align:center;">
                 <div style="color:rgba(255,255,255,0.4); font-size:0.7rem; text-transform:uppercase; letter-spacing:0.05em;">Chỉ số thực tế</div>
