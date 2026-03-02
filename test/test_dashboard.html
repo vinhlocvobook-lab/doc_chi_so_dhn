@@ -1,0 +1,1624 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Đánh Giá AI Đọc Đồng Hồ Nước</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans+Thai:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f14;
+      --surface: #111820;
+      --border: #1e2d3d;
+      --border2: #243447;
+      --text: #c8d8e8;
+      --muted: #4a6478;
+      --accent: #00e5ff;
+      --accent2: #00b4d8;
+      --green: #00e676;
+      --yellow: #ffd740;
+      --red: #ff5252;
+      --orange: #ff9100;
+      --mono: 'IBM Plex Mono', monospace;
+      --sans: 'IBM Plex Sans Thai', sans-serif;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 14px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      border-bottom: 1px solid var(--border);
+      padding: 18px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .header-title {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: .02em;
+    }
+
+    .header-sub {
+      font-size: 11px;
+      color: var(--muted);
+      font-family: var(--mono);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .live-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-family: var(--mono);
+      color: var(--green);
+    }
+
+    .live-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 6px var(--green);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .4
+      }
+    }
+
+    /* ── LAYOUT ── */
+    .main {
+      padding: 28px 32px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* ── FILTER BAR ── */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+      padding: 16px 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+
+    .filter-label {
+      font-size: 11px;
+      color: var(--muted);
+      font-family: var(--mono);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .filter-select,
+    .filter-input {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 12px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      outline: none;
+      transition: border-color .2s;
+    }
+
+    .filter-select:hover,
+    .filter-input:hover {
+      border-color: var(--accent2);
+    }
+
+    .filter-divider {
+      width: 1px;
+      height: 20px;
+      background: var(--border);
+      margin: 0 4px;
+    }
+
+    .btn {
+      padding: 7px 16px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-family: var(--mono);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    .btn-primary:hover {
+      background: #33eaff;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+
+    .btn-ghost:hover {
+      color: var(--text);
+      border-color: var(--border2);
+    }
+
+    /* ── SECTION TITLE ── */
+    .section-title {
+      font-size: 11px;
+      font-family: var(--mono);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: var(--muted);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── KPI GRID ── */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 20px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color .2s;
+    }
+
+    .kpi-card:hover {
+      border-color: var(--border2);
+    }
+
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+    }
+
+    .kpi-card.accent::before {
+      background: var(--accent);
+    }
+
+    .kpi-card.green::before {
+      background: var(--green);
+    }
+
+    .kpi-card.yellow::before {
+      background: var(--yellow);
+    }
+
+    .kpi-card.red::before {
+      background: var(--red);
+    }
+
+    .kpi-card.orange::before {
+      background: var(--orange);
+    }
+
+    .kpi-label {
+      font-size: 11px;
+      color: var(--muted);
+      font-family: var(--mono);
+      margin-bottom: 10px;
+    }
+
+    .kpi-value {
+      font-size: 32px;
+      font-weight: 600;
+      font-family: var(--mono);
+      line-height: 1;
+    }
+
+    .kpi-card.accent .kpi-value {
+      color: var(--accent);
+    }
+
+    .kpi-card.green .kpi-value {
+      color: var(--green);
+    }
+
+    .kpi-card.yellow .kpi-value {
+      color: var(--yellow);
+    }
+
+    .kpi-card.red .kpi-value {
+      color: var(--red);
+    }
+
+    .kpi-card.orange .kpi-value {
+      color: var(--orange);
+    }
+
+    .kpi-meta {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    .kpi-trend {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 11px;
+      font-family: var(--mono);
+    }
+
+    .kpi-trend.up {
+      color: var(--green);
+    }
+
+    .kpi-trend.down {
+      color: var(--red);
+    }
+
+    /* ── TWO-COL LAYOUT ── */
+    .row {
+      display: grid;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .row-2 {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .row-3 {
+      grid-template-columns: 2fr 1fr;
+    }
+
+    .row-4 {
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px 22px;
+      transition: border-color .2s;
+    }
+
+    .card:hover {
+      border-color: var(--border2);
+    }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text);
+    }
+
+    .card-title .icon {
+      font-size: 15px;
+    }
+
+    /* ── SCORE GAUGE ── */
+    .gauge-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .gauge-ring {
+      position: relative;
+      width: 110px;
+      height: 110px;
+    }
+
+    .gauge-ring svg {
+      width: 110px;
+      height: 110px;
+      transform: rotate(-90deg);
+    }
+
+    .gauge-ring circle {
+      fill: none;
+      stroke-width: 9;
+      stroke-linecap: round;
+    }
+
+    .gauge-ring .track {
+      stroke: var(--border);
+    }
+
+    .gauge-ring .fill {
+      transition: stroke-dashoffset 1.2s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    .gauge-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .gauge-score {
+      font-size: 22px;
+      font-weight: 600;
+      font-family: var(--mono);
+    }
+
+    .gauge-max {
+      font-size: 10px;
+      color: var(--muted);
+      font-family: var(--mono);
+    }
+
+    .gauge-label {
+      font-size: 11px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .gauge-level {
+      font-size: 11px;
+      font-weight: 600;
+      margin-top: 2px;
+      text-align: center;
+    }
+
+    .scores-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .score-detail-list {
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .score-detail-item {}
+
+    .sdi-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+
+    .sdi-name {
+      font-size: 12px;
+      color: var(--text);
+    }
+
+    .sdi-pts {
+      font-size: 12px;
+      font-family: var(--mono);
+      font-weight: 600;
+    }
+
+    .progress-bar {
+      height: 5px;
+      background: var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 1s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    /* ── HORIZONTAL BAR CHART ── */
+    .hbar-list {
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+    }
+
+    .hbar-item {}
+
+    .hbar-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+
+    .hbar-label {
+      font-size: 12px;
+    }
+
+    .hbar-val {
+      font-size: 12px;
+      font-family: var(--mono);
+    }
+
+    .hbar-track {
+      height: 8px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .hbar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 1s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    /* ── DONUT CHART ── */
+    .donut-wrap {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .donut-svg {
+      min-width: 120px;
+    }
+
+    .donut-legend {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      flex: 1;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .legend-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .legend-name {
+      font-size: 12px;
+      flex: 1;
+    }
+
+    .legend-val {
+      font-size: 12px;
+      font-family: var(--mono);
+      font-weight: 600;
+    }
+
+    .legend-pct {
+      font-size: 11px;
+      color: var(--muted);
+      font-family: var(--mono);
+      width: 36px;
+      text-align: right;
+    }
+
+    /* ── MODEL COMPARE TABLE ── */
+    .model-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .model-table th {
+      text-align: left;
+      padding: 8px 12px;
+      font-size: 10px;
+      font-family: var(--mono);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .model-table td {
+      padding: 11px 12px;
+      font-size: 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    .model-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .model-table tr:hover td {
+      background: rgba(255, 255, 255, .02);
+    }
+
+    .model-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(0, 229, 255, .1);
+      border: 1px solid rgba(0, 229, 255, .2);
+      border-radius: 5px;
+      padding: 2px 8px;
+      font-size: 11px;
+      font-family: var(--mono);
+      color: var(--accent);
+    }
+
+    .score-pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-family: var(--mono);
+      font-weight: 600;
+    }
+
+    .score-pill.s-high {
+      background: rgba(0, 230, 118, .15);
+      color: var(--green);
+    }
+
+    .score-pill.s-mid {
+      background: rgba(255, 215, 64, .15);
+      color: var(--yellow);
+    }
+
+    .score-pill.s-low {
+      background: rgba(255, 82, 82, .15);
+      color: var(--red);
+    }
+
+    .mini-bar-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .mini-bar {
+      flex: 1;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .mini-bar-fill {
+      height: 100%;
+      border-radius: 2px;
+    }
+
+    /* ── ERROR TYPE HEATMAP ── */
+    .error-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .error-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      text-align: center;
+    }
+
+    .error-count {
+      font-size: 26px;
+      font-weight: 600;
+      font-family: var(--mono);
+    }
+
+    .error-name {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+
+    .error-pct {
+      font-size: 11px;
+      font-family: var(--mono);
+      margin-top: 5px;
+    }
+
+    /* ── DECISION ROW ── */
+    .decision-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .decision-card {
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+      border: 1px solid transparent;
+    }
+
+    .decision-card.d-auto {
+      background: rgba(0, 230, 118, .07);
+      border-color: rgba(0, 230, 118, .2);
+    }
+
+    .decision-card.d-watch {
+      background: rgba(0, 229, 255, .07);
+      border-color: rgba(0, 229, 255, .2);
+    }
+
+    .decision-card.d-review {
+      background: rgba(255, 215, 64, .07);
+      border-color: rgba(255, 215, 64, .2);
+    }
+
+    .decision-card.d-reject {
+      background: rgba(255, 82, 82, .07);
+      border-color: rgba(255, 82, 82, .2);
+    }
+
+    .decision-icon {
+      font-size: 22px;
+      margin-bottom: 6px;
+    }
+
+    .decision-num {
+      font-size: 28px;
+      font-weight: 600;
+      font-family: var(--mono);
+    }
+
+    .decision-card.d-auto .decision-num {
+      color: var(--green);
+    }
+
+    .decision-card.d-watch .decision-num {
+      color: var(--accent);
+    }
+
+    .decision-card.d-review .decision-num {
+      color: var(--yellow);
+    }
+
+    .decision-card.d-reject .decision-num {
+      color: var(--red);
+    }
+
+    .decision-label {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+
+    /* ── IMAGE QUALITY ── */
+    .imgq-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .imgq-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      text-align: center;
+    }
+
+    .imgq-icon {
+      font-size: 22px;
+      margin-bottom: 6px;
+    }
+
+    .imgq-count {
+      font-size: 24px;
+      font-weight: 600;
+      font-family: var(--mono);
+      color: var(--text);
+    }
+
+    .imgq-name {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    .imgq-acc {
+      font-size: 12px;
+      font-family: var(--mono);
+      margin-top: 6px;
+      font-weight: 600;
+    }
+
+    /* ── ROI SECTION ── */
+    .roi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .roi-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 18px;
+    }
+
+    .roi-label {
+      font-size: 11px;
+      color: var(--muted);
+      font-family: var(--mono);
+      margin-bottom: 8px;
+    }
+
+    .roi-value {
+      font-size: 22px;
+      font-weight: 600;
+      font-family: var(--mono);
+      color: var(--accent);
+    }
+
+    .roi-note {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 5px;
+    }
+
+    /* ── RECENT LOG TABLE ── */
+    .log-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .log-table th {
+      text-align: left;
+      padding: 8px 10px;
+      font-size: 10px;
+      font-family: var(--mono);
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    .log-table td {
+      padding: 9px 10px;
+      font-size: 12px;
+      border-bottom: 1px solid rgba(30, 45, 61, .6);
+      vertical-align: middle;
+    }
+
+    .log-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .log-table tr:hover td {
+      background: rgba(255, 255, 255, .02);
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 1px 7px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-family: var(--mono);
+      font-weight: 600;
+    }
+
+    .tag-ok {
+      background: rgba(0, 230, 118, .12);
+      color: var(--green);
+    }
+
+    .tag-warn {
+      background: rgba(255, 215, 64, .12);
+      color: var(--yellow);
+    }
+
+    .tag-err {
+      background: rgba(255, 82, 82, .12);
+      color: var(--red);
+    }
+
+    .tag-info {
+      background: rgba(0, 229, 255, .12);
+      color: var(--accent);
+    }
+
+    .mono-val {
+      font-family: var(--mono);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1100px) {
+      .kpi-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .row-4 {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .main {
+        padding: 16px;
+      }
+
+      .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .row-2,
+      .row-3 {
+        grid-template-columns: 1fr;
+      }
+
+      .scores-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ── ANIMATE IN ── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(12px);
+      animation: fadeIn .5s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .fade-in:nth-child(1) {
+      animation-delay: .05s;
+    }
+
+    .fade-in:nth-child(2) {
+      animation-delay: .10s;
+    }
+
+    .fade-in:nth-child(3) {
+      animation-delay: .15s;
+    }
+
+    .fade-in:nth-child(4) {
+      animation-delay: .20s;
+    }
+
+    .fade-in:nth-child(5) {
+      animation-delay: .25s;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-left">
+      <div class="logo-icon">💧</div>
+      <div>
+        <div class="header-title">AI Meter Reading — POC Dashboard</div>
+        <div class="header-sub">tn_meter_reading_log · Cấp nước Cần Giờ</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="live-badge">
+        <div class="live-dot"></div>
+        LIVE DATA
+      </div>
+    </div>
+  </header>
+
+  <div class="main">
+
+    <!-- FILTER BAR -->
+    <div class="filter-bar">
+      <span class="filter-label">Lọc</span>
+      <select class="filter-select" id="f-model">
+        <option>Tất cả Model</option>
+        <option>gemini-2.5-flash-lite</option>
+        <option>gemini-2.5-pro</option>
+        <option>gemini-2.5-flash</option>
+      </select>
+      <select class="filter-select" id="f-prompt">
+        <option>Tất cả Prompt</option>
+        <option>v1.0</option>
+        <option>v1.1</option>
+        <option>v2.0</option>
+      </select>
+      <select class="filter-select" id="f-imgtype">
+        <option>Tất cả loại ảnh</option>
+        <option>Hình rõ</option>
+        <option>Hình mờ</option>
+        <option>Không đầy đủ</option>
+        <option>Không đọc được</option>
+      </select>
+      <div class="filter-divider"></div>
+      <input class="filter-input" type="date" value="2025-01-01" style="width:130px">
+      <span style="color:var(--muted); font-size:12px;">→</span>
+      <input class="filter-input" type="date" value="2025-06-30" style="width:130px">
+      <div class="filter-divider"></div>
+      <button class="btn btn-primary" onclick="applyFilter()">Áp dụng</button>
+      <button class="btn btn-ghost" onclick="resetFilter()">Reset</button>
+    </div>
+
+    <!-- KPI ROW -->
+    <div class="section-title">Tổng quan</div>
+    <div class="kpi-grid">
+      <div class="kpi-card accent fade-in">
+        <div class="kpi-label">TỔNG ẢNH THỬ NGHIỆM</div>
+        <div class="kpi-value" id="kpi-total">1,248</div>
+        <div class="kpi-meta">Từ <span style="color:var(--text)">Jan – Jun 2025</span></div>
+      </div>
+      <div class="kpi-card green fade-in">
+        <div class="kpi-label">TỶ LỆ CHÍNH XÁC (exact)</div>
+        <div class="kpi-value" id="kpi-exact">87.3<span style="font-size:16px">%</span></div>
+        <div class="kpi-meta">
+          <span class="kpi-trend up">▲ 4.1%</span> so với prompt v1.0
+        </div>
+      </div>
+      <div class="kpi-card yellow fade-in">
+        <div class="kpi-label">TB SCORE POC</div>
+        <div class="kpi-value" id="kpi-poc">78.4</div>
+        <div class="kpi-meta">Thang điểm 0 – 100</div>
+      </div>
+      <div class="kpi-card orange fade-in">
+        <div class="kpi-label">CẦN REVIEW</div>
+        <div class="kpi-value" id="kpi-review">156</div>
+        <div class="kpi-meta">12.5% tổng ảnh</div>
+      </div>
+      <div class="kpi-card red fade-in">
+        <div class="kpi-label">LỖI NGHIÊM TRỌNG</div>
+        <div class="kpi-value" id="kpi-error">43</div>
+        <div class="kpi-meta">sai_so > 50 | chỉ số âm</div>
+      </div>
+    </div>
+
+    <!-- SCORE SECTION -->
+    <div class="section-title">Phân tích Score</div>
+    <div class="row row-2">
+
+      <!-- SCORE POC -->
+      <div class="card">
+        <div class="card-title"><span class="icon">🎯</span> Score POC — Giai đoạn 1 (có ground truth)</div>
+        <div class="scores-row">
+          <div class="gauge-wrap">
+            <div class="gauge-ring">
+              <svg viewBox="0 0 110 110">
+                <circle class="track" cx="55" cy="55" r="46" />
+                <circle class="fill" id="gauge-poc-fill" cx="55" cy="55" r="46" stroke="var(--green)"
+                  stroke-dasharray="289" stroke-dashoffset="289" />
+              </svg>
+              <div class="gauge-center">
+                <div class="gauge-score" style="color:var(--green)" id="gauge-poc-val">78</div>
+                <div class="gauge-max">/100</div>
+              </div>
+            </div>
+            <div class="gauge-label">Trung bình Score POC</div>
+            <div class="gauge-level" style="color:var(--yellow)" id="gauge-poc-level">AI_CHAP_NHAN_DUOC</div>
+          </div>
+          <div>
+            <div style="font-size:11px; color:var(--muted); font-family:var(--mono); margin-bottom:12px;">PHÂN BỔ ĐIỂM
+            </div>
+            <div class="score-detail-list">
+              <div class="score-detail-item">
+                <div class="sdi-header">
+                  <span class="sdi-name">score_so_sat <span style="color:var(--muted)">(max 60)</span></span>
+                  <span class="sdi-pts" style="color:var(--green)">47 / 60</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width:78%; background:var(--green);"></div>
+                </div>
+              </div>
+              <div class="score-detail-item">
+                <div class="sdi-header">
+                  <span class="sdi-name">score_ky_tu_poc <span style="color:var(--muted)">(max 40)</span></span>
+                  <span class="sdi-pts" style="color:var(--accent)">31 / 40</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width:78%; background:var(--accent);"></div>
+                </div>
+              </div>
+            </div>
+            <div style="margin-top:18px; display:flex; flex-direction:column; gap:6px;">
+              <div style="font-size:11px; color:var(--muted); font-family:var(--mono); margin-bottom:4px;">PHÂN LOẠI MỨC
+                ĐỘ</div>
+              <div class="hbar-item">
+                <div class="hbar-header">
+                  <span class="hbar-label" style="color:var(--green)">✓ AI_CHINH_XAC_CAO (≥90)</span>
+                  <span class="hbar-val" style="color:var(--green)">412 <span
+                      style="color:var(--muted)">33%</span></span>
+                </div>
+                <div class="hbar-track">
+                  <div class="hbar-fill" style="width:33%; background:var(--green);"></div>
+                </div>
+              </div>
+              <div class="hbar-item">
+                <div class="hbar-header">
+                  <span class="hbar-label" style="color:var(--yellow)">~ AI_CHAP_NHAN_DUOC (70-89)</span>
+                  <span class="hbar-val" style="color:var(--yellow)">518 <span
+                      style="color:var(--muted)">41%</span></span>
+                </div>
+                <div class="hbar-track">
+                  <div class="hbar-fill" style="width:41%; background:var(--yellow);"></div>
+                </div>
+              </div>
+              <div class="hbar-item">
+                <div class="hbar-header">
+                  <span class="hbar-label" style="color:var(--orange)">⚠ AI_CAN_CANH_BAO (50-69)</span>
+                  <span class="hbar-val" style="color:var(--orange)">193 <span
+                      style="color:var(--muted)">15%</span></span>
+                </div>
+                <div class="hbar-track">
+                  <div class="hbar-fill" style="width:15%; background:var(--orange);"></div>
+                </div>
+              </div>
+              <div class="hbar-item">
+                <div class="hbar-header">
+                  <span class="hbar-label" style="color:var(--red)">✗ KHONG_DAT_YEU_CAU (&lt;50)</span>
+                  <span class="hbar-val" style="color:var(--red)">125 <span style="color:var(--muted)">10%</span></span>
+                </div>
+                <div class="hbar-track">
+                  <div class="hbar-fill" style="width:10%; background:var(--red);"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCORE THỰC TẾ -->
+      <div class="card">
+        <div class="card-title"><span class="icon">⚡</span> Score Thực tế — Giai đoạn 2 (không có ground truth)</div>
+        <div class="scores-row">
+          <div class="gauge-wrap">
+            <div class="gauge-ring">
+              <svg viewBox="0 0 110 110">
+                <circle class="track" cx="55" cy="55" r="46" />
+                <circle class="fill" id="gauge-tt-fill" cx="55" cy="55" r="46" stroke="var(--accent)"
+                  stroke-dasharray="289" stroke-dashoffset="289" />
+              </svg>
+              <div class="gauge-center">
+                <div class="gauge-score" style="color:var(--accent)" id="gauge-tt-val">72</div>
+                <div class="gauge-max">/100</div>
+              </div>
+            </div>
+            <div class="gauge-label">Trung bình Score Thực tế</div>
+            <div class="gauge-level" style="color:var(--accent)" id="gauge-tt-level">CHAP_NHAN_CO_THEO_DOI</div>
+          </div>
+          <div>
+            <div style="font-size:11px; color:var(--muted); font-family:var(--mono); margin-bottom:12px;">PHÂN BỔ ĐIỂM
+            </div>
+            <div class="score-detail-list">
+              <div class="score-detail-item">
+                <div class="sdi-header">
+                  <span class="sdi-name">score_hop_ly <span style="color:var(--muted)">(max 50)</span></span>
+                  <span class="sdi-pts" style="color:var(--green)">38 / 50</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width:76%; background:var(--green);"></div>
+                </div>
+              </div>
+              <div class="score-detail-item">
+                <div class="sdi-header">
+                  <span class="sdi-name">score_do_lech_tb <span style="color:var(--muted)">(max 30)</span></span>
+                  <span class="sdi-pts" style="color:var(--yellow)">20 / 30</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width:67%; background:var(--yellow);"></div>
+                </div>
+              </div>
+              <div class="score-detail-item">
+                <div class="sdi-header">
+                  <span class="sdi-name">score_doc_duoc <span style="color:var(--muted)">(max 20)</span></span>
+                  <span class="sdi-pts" style="color:var(--accent)">14 / 20</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width:70%; background:var(--accent);"></div>
+                </div>
+              </div>
+            </div>
+            <div style="margin-top:18px;">
+              <div style="font-size:11px; color:var(--muted); font-family:var(--mono); margin-bottom:10px;">QUYẾT ĐỊNH
+                TỰ ĐỘNG</div>
+              <div class="decision-grid">
+                <div class="decision-card d-auto">
+                  <div class="decision-icon">✅</div>
+                  <div class="decision-num">498</div>
+                  <div class="decision-label">Tự động chấp nhận</div>
+                </div>
+                <div class="decision-card d-watch">
+                  <div class="decision-icon">👁</div>
+                  <div class="decision-num">387</div>
+                  <div class="decision-label">Chấp nhận có theo dõi</div>
+                </div>
+                <div class="decision-card d-review">
+                  <div class="decision-icon">🔍</div>
+                  <div class="decision-num">220</div>
+                  <div class="decision-label">Cần review</div>
+                </div>
+                <div class="decision-card d-reject">
+                  <div class="decision-icon">❌</div>
+                  <div class="decision-num">143</div>
+                  <div class="decision-label">Từ chối / chụp lại</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODEL COMPARISON -->
+    <div class="section-title">So sánh Model & Prompt</div>
+    <div class="row row-3">
+      <div class="card">
+        <div class="card-title"><span class="icon">🤖</span> Hiệu suất theo Model AI</div>
+        <table class="model-table">
+          <thead>
+            <tr>
+              <th>Model</th>
+              <th>Prompt</th>
+              <th>Số ảnh</th>
+              <th>Exact match</th>
+              <th>Score POC</th>
+              <th>Score TT</th>
+              <th>Chi phí/ảnh</th>
+              <th>Tốc độ (ms)</th>
+            </tr>
+          </thead>
+          <tbody id="model-table-body">
+            <tr>
+              <td><span class="model-badge">gemini-2.5-flash-lite</span></td>
+              <td><span style="font-family:var(--mono); color:var(--muted)">v1.1</span></td>
+              <td class="mono-val">524</td>
+              <td>
+                <div class="mini-bar-wrap">
+                  <div class="mini-bar">
+                    <div class="mini-bar-fill" style="width:89%; background:var(--green)"></div>
+                  </div>
+                  <span class="mono-val" style="color:var(--green); width:34px">89%</span>
+                </div>
+              </td>
+              <td><span class="score-pill s-high">81</span></td>
+              <td><span class="score-pill s-high">76</span></td>
+              <td class="mono-val" style="color:var(--green)">₫12</td>
+              <td class="mono-val">1,240</td>
+            </tr>
+            <tr>
+              <td><span class="model-badge">gemini-2.5-pro</span></td>
+              <td><span style="font-family:var(--mono); color:var(--muted)">v1.1</span></td>
+              <td class="mono-val">387</td>
+              <td>
+                <div class="mini-bar-wrap">
+                  <div class="mini-bar">
+                    <div class="mini-bar-fill" style="width:93%; background:var(--green)"></div>
+                  </div>
+                  <span class="mono-val" style="color:var(--green); width:34px">93%</span>
+                </div>
+              </td>
+              <td><span class="score-pill s-high">91</span></td>
+              <td><span class="score-pill s-high">84</span></td>
+              <td class="mono-val" style="color:var(--yellow)">₫87</td>
+              <td class="mono-val">3,870</td>
+            </tr>
+            <tr>
+              <td><span class="model-badge">gemini-2.5-flash</span></td>
+              <td><span style="font-family:var(--mono); color:var(--muted)">v1.0</span></td>
+              <td class="mono-val">337</td>
+              <td>
+                <div class="mini-bar-wrap">
+                  <div class="mini-bar">
+                    <div class="mini-bar-fill" style="width:79%; background:var(--yellow)"></div>
+                  </div>
+                  <span class="mono-val" style="color:var(--yellow); width:34px">79%</span>
+                </div>
+              </td>
+              <td><span class="score-pill s-mid">73</span></td>
+              <td><span class="score-pill s-mid">68</span></td>
+              <td class="mono-val" style="color:var(--accent)">₫34</td>
+              <td class="mono-val">1,850</td>
+            </tr>
+          </tbody>
+        </table>
+        <div style="margin-top:14px; padding-top:14px; border-top:1px solid var(--border); display:flex; gap:20px;">
+          <div style="font-size:11px; color:var(--muted)">
+            💡 <span style="color:var(--text)">gemini-2.5-pro</span> chính xác nhất (93%) nhưng chi phí cao gấp 7×.<br>
+            <span style="color:var(--text)">gemini-2.5-flash-lite</span> cân bằng tốt giữa độ chính xác & chi phí.
+          </div>
+        </div>
+      </div>
+
+      <!-- COST ANALYSIS -->
+      <div class="card">
+        <div class="card-title"><span class="icon">💰</span> Phân tích chi phí & ROI</div>
+        <div class="roi-grid" style="grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px;">
+          <div class="roi-card">
+            <div class="roi-label">TỔNG CHI PHÍ API</div>
+            <div class="roi-value" style="font-size:18px">₫26,480</div>
+            <div class="roi-note">1,248 ảnh thử nghiệm</div>
+          </div>
+          <div class="roi-card">
+            <div class="roi-label">CHI PHÍ / ẢNH (TB)</div>
+            <div class="roi-value" style="font-size:18px">₫21</div>
+            <div class="roi-note">Tất cả model</div>
+          </div>
+          <div class="roi-card">
+            <div class="roi-label">NHÂN VIÊN / NGÀY</div>
+            <div class="roi-value" style="font-size:18px">200</div>
+            <div class="roi-note">đồng hồ ghi nhận</div>
+          </div>
+          <div class="roi-card">
+            <div class="roi-label">AI TỰ ĐỘNG 100%</div>
+            <div class="roi-value" style="font-size:18px; color:var(--green)">74.5%</div>
+            <div class="roi-note">không cần review</div>
+          </div>
+        </div>
+        <div
+          style="padding:12px 14px; background:rgba(0,230,118,.06); border:1px solid rgba(0,230,118,.15); border-radius:8px;">
+          <div style="font-size:11px; font-weight:600; color:var(--green); margin-bottom:6px;">📊 KẾT LUẬN KHUYẾN NGHỊ
+          </div>
+          <div style="font-size:11px; color:var(--text); line-height:1.7;">
+            Với <strong>flash-lite v1.1</strong>: chi phí chỉ ₫12/ảnh, exact match 89%.<br>
+            Ước tính tiết kiệm <strong style="color:var(--green)">~70% workload</strong> nhân viên ghi đồng hồ.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ERROR ANALYSIS -->
+    <div class="section-title">Phân tích lỗi & Chất lượng ảnh</div>
+    <div class="row row-2">
+
+      <div class="card">
+        <div class="card-title"><span class="icon">🔬</span> Phân loại lỗi (loai_sai_so)</div>
+        <div class="error-grid" id="error-grid">
+          <div class="error-card">
+            <div class="error-count" style="color:var(--green)">1,089</div>
+            <div class="error-name">CHINH_XAC<br>sai_so = 0</div>
+            <div class="error-pct" style="color:var(--green)">87.3%</div>
+          </div>
+          <div class="error-card">
+            <div class="error-count" style="color:var(--yellow)">48</div>
+            <div class="error-name">MAT_CHU_SO_DAU<br>vd: 2345→12345</div>
+            <div class="error-pct" style="color:var(--yellow)">3.8%</div>
+          </div>
+          <div class="error-card">
+            <div class="error-count" style="color:var(--orange)">43</div>
+            <div class="error-name">DOC_SAI_CHU_SO<br>vd: 12847→12345</div>
+            <div class="error-pct" style="color:var(--orange)">3.4%</div>
+          </div>
+          <div class="error-card">
+            <div class="error-count" style="color:var(--red)">28</div>
+            <div class="error-name">CO_KY_TU_X<br>không parse được</div>
+            <div class="error-pct" style="color:var(--red)">2.2%</div>
+          </div>
+          <div class="error-card">
+            <div class="error-count" style="color:var(--red)">22</div>
+            <div class="error-name">CHI_SO_AM<br>AI &lt; tháng trước</div>
+            <div class="error-pct" style="color:var(--red)">1.8%</div>
+          </div>
+          <div class="error-card">
+            <div class="error-count" style="color:var(--muted)">18</div>
+            <div class="error-name">KHONG_DOC_DUOC<br>NULL response</div>
+            <div class="error-pct" style="color:var(--muted)">1.4%</div>
+          </div>
+          <div class="error-card">
+            <div class="error-count" style="color:var(--accent)">0</div>
+            <div class="error-name">SAI_NHO<br>|sai_so| ≤ 5</div>
+            <div class="error-pct" style="color:var(--accent)">0%</div>
+          </div>
+          <div class="error-card">
+            <div class="error-count" style="color:var(--muted)">0</div>
+            <div class="error-name">TIEU_THU_0<br>nhà bỏ trống</div>
+            <div class="error-pct" style="color:var(--muted)">0%</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">📸</span> Tác động của chất lượng ảnh</div>
+        <div class="imgq-grid" style="margin-bottom:18px;">
+          <div class="imgq-card">
+            <div class="imgq-icon">🟢</div>
+            <div class="imgq-count">748</div>
+            <div class="imgq-name">Hình rõ</div>
+            <div class="imgq-acc" style="color:var(--green)">96.2%</div>
+          </div>
+          <div class="imgq-card">
+            <div class="imgq-icon">🟡</div>
+            <div class="imgq-count">312</div>
+            <div class="imgq-name">Hình mờ</div>
+            <div class="imgq-acc" style="color:var(--yellow)">74.4%</div>
+          </div>
+          <div class="imgq-card">
+            <div class="imgq-icon">🟠</div>
+            <div class="imgq-count">143</div>
+            <div class="imgq-name">Không đầy đủ</div>
+            <div class="imgq-acc" style="color:var(--orange)">51.7%</div>
+          </div>
+          <div class="imgq-card">
+            <div class="imgq-icon">🔴</div>
+            <div class="imgq-count">45</div>
+            <div class="imgq-name">Không đọc được</div>
+            <div class="imgq-acc" style="color:var(--red)">8.9%</div>
+          </div>
+        </div>
+        <div style="font-size:11px; color:var(--muted); font-family:var(--mono); margin-bottom:10px;">ĐỘ CHÍNH XÁC THEO
+          CHẤT LƯỢNG ẢNH</div>
+        <div class="hbar-list">
+          <div class="hbar-item">
+            <div class="hbar-header">
+              <span class="hbar-label">🟢 Hình rõ</span>
+              <span class="hbar-val" style="color:var(--green)">96.2%</span>
+            </div>
+            <div class="hbar-track">
+              <div class="hbar-fill" style="width:96.2%; background:var(--green)"></div>
+            </div>
+          </div>
+          <div class="hbar-item">
+            <div class="hbar-header">
+              <span class="hbar-label">🟡 Hình mờ</span>
+              <span class="hbar-val" style="color:var(--yellow)">74.4%</span>
+            </div>
+            <div class="hbar-track">
+              <div class="hbar-fill" style="width:74.4%; background:var(--yellow)"></div>
+            </div>
+          </div>
+          <div class="hbar-item">
+            <div class="hbar-header">
+              <span class="hbar-label">🟠 Không đầy đủ</span>
+              <span class="hbar-val" style="color:var(--orange)">51.7%</span>
+            </div>
+            <div class="hbar-track">
+              <div class="hbar-fill" style="width:51.7%; background:var(--orange)"></div>
+            </div>
+          </div>
+          <div class="hbar-item">
+            <div class="hbar-header">
+              <span class="hbar-label">🔴 Không đọc được</span>
+              <span class="hbar-val" style="color:var(--red)">8.9%</span>
+            </div>
+            <div class="hbar-track">
+              <div class="hbar-fill" style="width:8.9%; background:var(--red)"></div>
+            </div>
+          </div>
+        </div>
+        <div
+          style="margin-top:14px; padding:10px 12px; background:rgba(255,215,64,.05); border:1px solid rgba(255,215,64,.15); border-radius:7px; font-size:11px; color:var(--text); line-height:1.7;">
+          💡 <strong style="color:var(--yellow)">Khuyến nghị:</strong> Đào tạo nhân viên chụp ảnh chuẩn góc &amp; ánh
+          sáng có thể nâng độ chính xác thêm <strong>~10-15%</strong>.
+        </div>
+      </div>
+    </div>
+
+    <!-- RECENT LOG -->
+    <div class="section-title">Log gần nhất</div>
+    <div class="card" style="margin-bottom:28px;">
+      <div class="card-title"><span class="icon">📋</span> Kết quả đọc gần nhất <span
+          style="font-size:11px; color:var(--muted); font-weight:400; margin-left:8px;">10 bản ghi mới nhất</span></div>
+      <div style="overflow-x:auto;">
+        <table class="log-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Model</th>
+              <th>AI đọc</th>
+              <th>Nhân viên</th>
+              <th>Sai số</th>
+              <th>Loại sai số</th>
+              <th>Score POC</th>
+              <th>Score TT</th>
+              <th>Quyết định</th>
+              <th>Loại ảnh</th>
+              <th>API (ms)</th>
+              <th>Chi phí</th>
+            </tr>
+          </thead>
+          <tbody id="log-tbody">
+            <tr>
+              <td class="mono-val" style="color:var(--muted)">1248</td>
+              <td><span style="font-size:11px; font-family:var(--mono); color:var(--accent)">flash-lite</span></td>
+              <td class="mono-val">12345</td>
+              <td class="mono-val">12345</td>
+              <td class="mono-val" style="color:var(--green)">0</td>
+              <td><span class="tag tag-ok">CHINH_XAC</span></td>
+              <td><span class="score-pill s-high">100</span></td>
+              <td><span class="score-pill s-high">90</span></td>
+              <td><span class="tag tag-ok">TỰ ĐỘNG</span></td>
+              <td><span class="tag tag-ok">Rõ</span></td>
+              <td class="mono-val">1,124</td>
+              <td class="mono-val" style="color:var(--green)">₫11</td>
+            </tr>
+            <tr>
+              <td class="mono-val" style="color:var(--muted)">1247</td>
+              <td><span style="font-size:11px; font-family:var(--mono); color:var(--accent)">2.5-pro</span></td>
+              <td class="mono-val">8932</td>
+              <td class="mono-val">8932</td>
+              <td class="mono-val" style="color:var(--green)">0</td>
+              <td><span class="tag tag-ok">CHINH_XAC</span></td>
+              <td><span class="score-pill s-high">100</span></td>
+              <td><span class="score-pill s-high">85</span></td>
+              <td><span class="tag tag-ok">TỰ ĐỘNG</span></td>
+              <td><span class="tag tag-ok">Rõ</span></td>
+              <td class="mono-val">3,421</td>
+              <td class="mono-val" style="color:var(--yellow)">₫84</td>
+            </tr>
+            <tr>
+              <td class="mono-val" style="color:var(--muted)">1246</td>
+              <td><span style="font-size:11px; font-family:var(--mono); color:var(--accent)">flash-lite</span></td>
+              <td class="mono-val" style="color:var(--yellow)">2876</td>
+              <td class="mono-val">12876</td>
+              <td class="mono-val" style="color:var(--red)">-10000</td>
+              <td><span class="tag tag-warn">MAT_CHU_SO</span></td>
+              <td><span class="score-pill s-low">15</span></td>
+              <td><span class="score-pill s-low">10</span></td>
+              <td><span class="tag tag-err">TỪ CHỐI</span></td>
+              <td><span class="tag tag-warn">Mờ</span></td>
+              <td class="mono-val">1,380</td>
+              <td class="mono-val" style="color:var(--green)">₫13</td>
+            </tr>
+            <tr>
+              <td class="mono-val" style="color:var(--muted)">1245</td>
+              <td><span style="font-size:11px; font-family:var(--mono); color:var(--accent)">2.5-flash</span></td>
+              <td class="mono-val">15420</td>
+              <td class="mono-val">15420</td>
+              <td class="mono-val" style="color:var(--green)">0</td>
+              <td><span class="tag tag-ok">CHINH_XAC</span></td>
+              <td><span class="score-pill s-high">100</span></td>
+              <td><span class="score-pill s-mid">72</span></td>
+              <td><span class="tag tag-info">THEO DÕI</span></td>
+              <td><span class="tag tag-ok">Rõ</span></td>
+              <td class="mono-val">1,920</td>
+              <td class="mono-val" style="color:var(--accent)">₫32</td>
+            </tr>
+            <tr>
+              <td class="mono-val" style="color:var(--muted)">1244</td>
+              <td><span style="font-size:11px; font-family:var(--mono); color:var(--accent)">flash-lite</span></td>
+              <td class="mono-val" style="color:var(--muted)">NULL</td>
+              <td class="mono-val">9812</td>
+              <td class="mono-val" style="color:var(--muted)">—</td>
+              <td><span class="tag tag-err">KHONG_DOC</span></td>
+              <td><span class="score-pill s-low">0</span></td>
+              <td><span class="score-pill s-low">0</span></td>
+              <td><span class="tag tag-err">TỪ CHỐI</span></td>
+              <td><span class="tag tag-err">Không đọc được</span></td>
+              <td class="mono-val">890</td>
+              <td class="mono-val" style="color:var(--green)">₫9</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="display:flex; justify-content:flex-end; margin-top:14px;">
+        <button class="btn btn-ghost" style="font-size:11px;">Xem tất cả →</button>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+
+  <script>
+    // ── Animate gauges on load ────────────────────────────────
+    document.addEventListener('DOMContentLoaded', () => {
+      animateGauge('gauge-poc-fill', 'gauge-poc-val', 78, 'var(--green)');
+      animateGauge('gauge-tt-fill', 'gauge-tt-val', 72, 'var(--accent)');
+    });
+
+    function animateGauge(fillId, valId, target, color) {
+      const circ = 2 * Math.PI * 46; // r=46
+      const el = document.getElementById(fillId);
+      const valEl = document.getElementById(valId);
+      if (!el || !valEl) return;
+
+      let current = 0;
+      const step = target / 60;
+
+      const timer = setInterval(() => {
+        current = Math.min(current + step, target);
+        const offset = circ - (current / 100) * circ;
+        el.style.strokeDashoffset = offset;
+        valEl.textContent = Math.round(current);
+        if (current >= target) clearInterval(timer);
+      }, 16);
+    }
+
+    function applyFilter() {
+      const model = document.getElementById('f-model').value;
+      const prompt = document.getElementById('f-prompt').value;
+      console.log('Filter:', { model, prompt });
+      // TODO: Gọi API backend lấy data theo filter
+    }
+
+    function resetFilter() {
+      document.getElementById('f-model').selectedIndex = 0;
+      document.getElementById('f-prompt').selectedIndex = 0;
+      document.getElementById('f-imgtype').selectedIndex = 0;
+    }
+  </script>
+</body>
+
+</html>

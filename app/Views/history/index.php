@@ -37,9 +37,14 @@
                 value="<?= htmlspecialchars($filters['soDanhBo']) ?>">
         </div>
         <div class="filter-group">
-            <label>Loại ĐH (API cũ)</label>
-            <input type="text" name="loaiDongHo" class="filter-input" placeholder="Nhập loại..."
+            <label>Loại ĐH (API)</label>
+            <input list="loaiDongHoList" name="loaiDongHo" class="filter-input" placeholder="Chọn hoặc nhập..."
                 value="<?= htmlspecialchars($filters['loaiDongHo']) ?>">
+            <datalist id="loaiDongHoList">
+                <?php foreach ($distinctLoaiDongHo as $type): ?>
+                    <option value="<?= htmlspecialchars($type) ?>">
+                    <?php endforeach; ?>
+            </datalist>
         </div>
         <!-- NEW: loaiDongHo_new filter -->
         <div class="filter-group">
@@ -117,7 +122,10 @@
                                     <?php if (!empty($item['linkHinhDongHo'])): ?>
                                         <button class="btn"
                                             style="padding:5px 10px; font-size:0.85rem; background:rgba(139,92,246,0.15); color:#a78bfa; border:1px solid rgba(139,92,246,0.3);"
-                                            onclick="openAiRead(<?= $item['id'] ?>, '<?= addslashes(htmlspecialchars($item['linkHinhDongHo'])) ?>', '<?= addslashes(htmlspecialchars($item['soDanhBo'])) ?>', <?= (int) $item['chiSoNuoc'] ?>)">
+                                            data-ai-prompt="<?= htmlspecialchars($item['eff_prompt_txt'] ?? '') ?>"
+                                            data-ai-model="<?= htmlspecialchars($item['eff_llm_models'] ?? '') ?>"
+                                            data-ai-version="<?= htmlspecialchars($item['eff_prompt_version'] ?? '') ?>"
+                                            onclick="openAiRead(<?= $item['id'] ?>, '<?= addslashes(htmlspecialchars($item['linkHinhDongHo'])) ?>', '<?= addslashes(htmlspecialchars($item['soDanhBo'])) ?>', <?= (int) $item['chiSoNuoc'] ?>, this)">
                                             🤖 Test AI
                                         </button>
                                     <?php endif; ?>
@@ -241,7 +249,7 @@
     (function () {
         let _editId = null;
 
-        function toast(msg, type) {
+        window.toast = function (msg, type) {
             const t = document.getElementById('history-toast');
             if (!t) return;
             t.textContent = msg;
@@ -283,14 +291,14 @@
                 });
                 const result = await res.json();
                 if (result.success) {
-                    toast(result.message || 'Đã lưu!');
+                    window.toast(result.message || 'Đã lưu!');
                     window.closeEditMeterType();
                     window.loadPage(window.location.pathname + window.location.search);
                 } else {
-                    toast('Lỗi: ' + (result.error || 'Không xác định'), 'error');
+                    window.toast('Lỗi: ' + (result.error || 'Không xác định'), 'error');
                 }
             } catch (e) {
-                toast('Lỗi kết nối: ' + e.message, 'error');
+                window.toast('Lỗi kết nối: ' + e.message, 'error');
             } finally {
                 btn.disabled = false; btn.textContent = 'Lưu';
             }
@@ -348,6 +356,35 @@
             <textarea id="ai-read-prompt" rows="5"
                 style="width:100%; padding:10px 13px; border-radius:8px; background:rgba(255,255,255,0.06); border:1px solid rgba(139,92,246,0.3); color:#f1f5f9; font-size:0.85rem; resize:vertical; outline:none; box-sizing:border-box;"
                 placeholder="Nhập prompt cho AI..."></textarea>
+        </div>
+
+        <!-- Prompt Version & Save Button -->
+        <div style="display:grid; grid-template-columns:1fr 1fr auto; gap:1rem; margin-bottom:1.2rem; align-items:end;">
+            <div>
+                <label
+                    style="font-size:0.75rem; font-weight:600; color:rgba(167,139,250,0.9); text-transform:uppercase; letter-spacing:0.04em;">Phiên
+                    bản prompt</label>
+                <input type="text" id="ai-read-prompt-version"
+                    style="width:100%; padding:8px 12px; border-radius:8px; background:rgba(255,255,255,0.06); border:1px solid rgba(139,92,246,0.3); color:#f1f5f9; font-size:0.9rem; outline:none;"
+                    placeholder="VD: v1.0">
+            </div>
+            <div>
+                <label
+                    style="font-size:0.75rem; font-weight:600; color:rgba(167,139,250,0.9); text-transform:uppercase; letter-spacing:0.04em;">Phạm
+                    vi áp dụng</label>
+                <select id="ai-read-prompt-scope"
+                    style="width:100%; padding:8px 12px; border-radius:8px; background:rgba(255,255,255,0.06); border:1px solid rgba(139,92,246,0.3); color:#f1f5f9; font-size:0.9rem; outline:none;">
+                    <option value="id">Chỉ bản ghi này</option>
+                    <option value="soDanhBo">Cùng Số danh bộ</option>
+                    <option value="loaiDongHo">Cùng Loại ĐH (API)</option>
+                    <option value="loaiDongHo_new">Cùng Loại ĐH (Chuẩn)</option>
+                </select>
+            </div>
+            <div>
+                <button type="button" onclick="savePromptInfo(event)"
+                    style="padding:8px 16px; border-radius:8px; background:rgba(167,139,250,0.15); border:1px solid rgba(167,139,250,0.5); color:#a78bfa; font-size:0.85rem; cursor:pointer; font-weight:600; transition:all 0.2s;">💾
+                    Lưu cấu hình</button>
+            </div>
         </div>
 
         <!-- Prompt suggestions toggle -->
@@ -434,7 +471,7 @@
             }
         ];
 
-        window.openAiRead = function (id, imgUrl, sodb, humanCS) {
+        window.openAiRead = function (id, imgUrl, sodb, humanCS, btnEl) {
             _aiReadId = id;
             _aiReadSDB = sodb;
             _aiReadHumanCS = humanCS;
@@ -447,6 +484,18 @@
             document.getElementById('ai-steps').innerHTML = '';
             document.getElementById('ai-read-start').disabled = false;
             document.getElementById('ai-read-start').textContent = '▶ Bắt đầu đọc';
+
+            if (btnEl) {
+                const lastPromptTxt = btnEl.getAttribute('data-ai-prompt');
+                const lastModel = btnEl.getAttribute('data-ai-model');
+                const lastVersion = btnEl.getAttribute('data-ai-version');
+
+                document.getElementById('ai-read-prompt').value = lastPromptTxt || '';
+                if (lastModel) document.getElementById('ai-read-model').value = lastModel;
+                document.getElementById('ai-read-prompt-version').value = lastVersion || '';
+                document.getElementById('ai-read-prompt-scope').value = 'id';
+            }
+
             document.getElementById('ai-read-modal').style.display = 'block';
         };
 
@@ -480,6 +529,51 @@
             ta.value = AI_PROMPTS[idx].text;
             ta.style.borderColor = '#4f46e5';
             setTimeout(() => ta.style.borderColor = '', 1000);
+        };
+
+        window.savePromptInfo = async function (event) {
+            if (!_aiReadId) return;
+            const model = document.getElementById('ai-read-model').value;
+            const prompt = document.getElementById('ai-read-prompt').value.trim();
+            const version = document.getElementById('ai-read-prompt-version').value.trim();
+            const scope = document.getElementById('ai-read-prompt-scope').value;
+
+            const fd = new FormData();
+            fd.append('id', _aiReadId);
+            fd.append('modelName', model);
+            fd.append('promptText', prompt);
+            fd.append('promptVersion', version);
+            fd.append('applyScope', scope);
+
+            const btn = event.currentTarget || document.querySelector('button[onclick="savePromptInfo(event)"]');
+            const originalText = btn.textContent;
+            btn.textContent = '⏳ Đang lưu...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('/history/save-prompt-info', {
+                    method: 'POST', body: fd,
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                });
+                const result = await res.json();
+                if (result.success) {
+                    window.toast(result.message || 'Đã lưu cấu hình prompt!');
+                    // Optionally update the list button attributes here
+                    const btnEl = document.querySelector(`button[onclick*="openAiRead(${_aiReadId},"]`);
+                    if (btnEl) {
+                        btnEl.setAttribute('data-ai-prompt', prompt);
+                        btnEl.setAttribute('data-ai-model', model);
+                        btnEl.setAttribute('data-ai-version', version);
+                    }
+                } else {
+                    window.toast('Lỗi: ' + (result.error || 'Không xác định'), 'error');
+                }
+            } catch (e) {
+                window.toast('Lỗi kết nối: ' + e.message, 'error');
+            } finally {
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
         };
 
         window.startAiRead = function () {

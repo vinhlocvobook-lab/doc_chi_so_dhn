@@ -39,12 +39,14 @@ $router->add('POST', '/pricing/save', 'GeminiPricingController@save');
 $router->add('POST', '/pricing/delete', 'GeminiPricingController@delete');
 $router->add('GET', '/history/detail', 'HistoryController@detail');
 $router->add('POST', '/history/update-meter-type', 'HistoryController@updateMeterType');
+$router->add('POST', '/history/save-prompt-info', 'HistoryController@savePromptInfo');
 $router->add('GET', '/history/ai-read', 'AiReadController@stream');
 $router->add('GET', '/history/ai-read-logs', 'AiReadController@logs');
 $router->add('GET', '/logs', 'LogController@index');
 $router->add('GET', '/logs/detail', 'LogController@detail');
 $router->add('GET', '/logs/image', 'LogController@image');
 $router->add('GET', '/logs/dashboard', 'LogController@dashboard');
+$router->add('GET', '/logs/dashboard2', 'LogController@dashboard2');
 
 $method = $_SERVER['REQUEST_METHOD'];
 $uri = $_SERVER['REQUEST_URI'];

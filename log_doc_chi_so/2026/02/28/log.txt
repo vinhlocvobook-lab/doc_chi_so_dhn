@@ -1,0 +1,126 @@
+============================================================
+[2026-02-28 04:03:54] ID: 85137 | SDB: 23061091000 | Model: gemini-3-flash-preview
+Status: thanh_cong | Time: 14321ms
+AI Chi So: 36539.141 | Parse: 36539
+Human Chi So: 36539 | Match: 1
+Score POC: 100/100 [AI_CHINH_XAC_CAO]
+Score TT : 80/100 [TU_DONG_CHAP_NHAN]
+Tokens: P=1298 O=110 T=1780
+Cost: 166.695220 VND
+Giải thích: Chỉ số tổng cộng (có ký hiệu Σ) hiển thị trên màn hình là 36539.141, với phần nguyên là 36539 m³.
+============================================================
+
+============================================================
+[2026-02-28 04:04:56] ID: 85137 | SDB: 23061091000 | Model: gemini-2.5-flash
+Status: thanh_cong | Time: 9136ms
+AI Chi So: 36539.14 | Parse: 36539
+Human Chi So: 36539 | Match: 1
+Score POC: 100/100 [AI_CHINH_XAC_CAO]
+Score TT : 80/100 [TU_DONG_CHAP_NHAN]
+Tokens: P=492 O=110 T=688
+Cost: 56.521788 VND
+Giải thích: Chỉ số nước tích lũy được hiển thị trên màn hình là 36539.14. Phần nguyên của chỉ số này là 36539 mét khối.
+============================================================
+
+============================================================
+[2026-02-28 04:05:28] ID: 85137 | SDB: 23061091000 | Model: gemini-2.5-flash-lite
+Status: loi_api | Time: 3149ms
+Error: Lỗi HTTP 503: This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.
+============================================================
+
+============================================================
+[2026-02-28 04:05:49] ID: 85137 | SDB: 23061091000 | Model: gemini-2.5-flash-lite-preview-09-2025
+Status: thanh_cong | Time: 2569ms
+AI Chi So: 36539.14 | Parse: 36539
+Human Chi So: 36539 | Match: 1
+Score POC: 100/100 [AI_CHINH_XAC_CAO]
+Score TT : 80/100 [TU_DONG_CHAP_NHAN]
+Tokens: P=492 O=132 T=0
+Cost: 2.690760 VND
+Giải thích: The main cumulative index shown on the meter display is '36539.14'. Extracting the whole cubic meter part gives 36539. The second line '2505.1' appears to be a flow rate (m³/h) or a secondary reading and is ignored for the cumulative index.
+============================================================
+
+============================================================
+[2026-02-28 04:06:17] ID: 85137 | SDB: 23061091000 | Model: gemini-flash-latest
+Status: thanh_cong | Time: 11007ms
+AI Chi So: 36539.141 | Parse: 36539
+Human Chi So: 36539 | Match: 1
+Score POC: 100/100 [AI_CHINH_XAC_CAO]
+Score TT : 80/100 [TU_DONG_CHAP_NHAN]
+Tokens: P=1298 O=106 T=1411
+Cost: 137.176000 VND
+Giải thích: Màn hình hiển thị chỉ số tổng cộng (kèm biểu tượng Σ) là 36539.141 m3, phần nguyên tương ứng là 36539.
+============================================================
+
+============================================================
+[2026-02-28 04:06:41] ID: 85137 | SDB: 23061091000 | Model: gemini-flash-lite-latest
+Status: thanh_cong | Time: 1775ms
+AI Chi So: 36539.14 | Parse: 36539
+Human Chi So: 36539 | Match: 1
+Score POC: 100/100 [AI_CHINH_XAC_CAO]
+Score TT : 80/100 [TU_DONG_CHAP_NHAN]
+Tokens: P=492 O=133 T=0
+Cost: 2.701312 VND
+Giải thích: The main cumulative index shown on the digital display is 36539.14. Removing the decimal part gives the integer reading of 36539 cubic meters. The second line '2505' is likely a flow rate (m³/h).
+============================================================
+
+============================================================
+[2026-02-28 11:01:40] ID: 84951 | SDB: 23051010005 | Model: gemini-3-flash-preview
+Status: thanh_cong | Time: 19635ms
+AI Chi So: 03514219 | Parse: 35142
+Human Chi So: 3514219 | Match: 0
+Score POC: 0/100 [AI_KHONG_DAT_YEU_CAU]
+Score TT : 20/100 [TU_CHOI]
+Tokens: P=1273 O=154 T=2857
+Cost: 255.081410 VND
+Giải thích: Màn hình kỹ thuật số hiển thị dãy số 035142 19 đi kèm đơn vị m³. Dựa vào khoảng cách giữa các chữ số, có thể xác định 5 chữ số đầu tiên (không tính số 0 ở đầu) là 35142 đại diện cho phần nguyên (mét khối) và hai chữ số cuối (19) là phần thập phân.
+============================================================
+
+============================================================
+[2026-02-28 11:04:10] ID: 84951 | SDB: 23051010005 | Model: gemini-flash-latest
+Status: thanh_cong | Time: 19233ms
+AI Chi So: 03514219 | Parse: 35142
+Human Chi So: 3514219 | Match: 0
+Score POC: 0/100 [AI_KHONG_DAT_YEU_CAU]
+Score TT : 20/100 [TU_CHOI]
+Tokens: P=1295 O=149 T=2683
+Cost: 241.205530 VND
+Giải thích: Chỉ số hiển thị trên màn hình LCD của đồng hồ là 03514219 m³. Dựa trên khoảng cách giữa các chữ số, 6 chữ số đầu là phần số nguyên (035142) và 2 chữ số cuối (19) là phần thập phân. Phần nguyên sau khi loại bỏ số 0 ở bên trái là 35142.
+============================================================
+
+============================================================
+[2026-02-28 11:13:54] ID: 84951 | SDB: 23051010005 | Model: gemini-flash-lite-latest
+Status: thanh_cong | Time: 4816ms
+AI Chi So: +03514219 | Parse: 3514219
+Human Chi So: 3514219 | Match: 1
+Score POC: 100/100 [AI_CHINH_XAC_CAO]
+Score TT : 90/100 [TU_DONG_CHAP_NHAN]
+Tokens: P=473 O=111 T=0
+Cost: 2.419046 VND
+Giải thích: The main cumulative index shown on the digital display is +03514219. The unit is m³. The leading plus sign and the leading zero are trimmed for the whole number part.
+============================================================
+
+============================================================
+[2026-02-28 11:31:35] ID: 84951 | SDB: 23051010005 | Model: gemini-flash-latest
+Status: thanh_cong | Time: 12008ms
+AI Chi So: 03514219 | Parse: 3514219
+Human Chi So: 3514219 | Match: 1
+Score POC: 100/100 [AI_CHINH_XAC_CAO]
+Score TT : 90/100 [TU_DONG_CHAP_NHAN]
+Tokens: P=1279 O=98 T=1507
+Cost: 143.889710 VND
+Giải thích: Chỉ số hiển thị trên màn hình điện tử của đồng hồ nước là 03514219 m³.
+============================================================
+
+============================================================
+[2026-02-28 12:16:02] ID: 78492 | SDB: 23021010007 | Model: gemini-2.5-flash-lite-preview-09-2025
+Status: thanh_cong | Time: 5425ms
+AI Chi So: 0010324 | Parse: 10324
+Human Chi So: 10324 | Match: 1
+Score POC: 100/100 [AI_CHINH_XAC_CAO]
+Score TT : 90/100 [TU_DONG_CHAP_NHAN]
+Tokens: P=554 O=134 T=0
+Cost: 2.875420 VND
+Giải thích: The main register shows 0010324 followed by a red digit which is likely the decimal part (0.1m3). We take the integer part (0010324) and remove leading zeros, resulting in 10324 cubic meters.
+============================================================
+

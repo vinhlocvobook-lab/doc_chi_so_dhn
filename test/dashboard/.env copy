@@ -1,0 +1,7 @@
+# Database Configuration
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=capnuoccangio
+DB_USER=capnuoc_cangio_user
+DB_PASS=MatKhau123@
+DB_CHARSET=utf8mb4

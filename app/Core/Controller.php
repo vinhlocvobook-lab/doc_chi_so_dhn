@@ -11,6 +11,12 @@ class Controller
         require_once __DIR__ . "/../Views/layout/main.php";
     }
 
+    protected function viewRaw($name, $data = [])
+    {
+        extract($data);
+        require_once __DIR__ . "/../Views/$name.php";
+    }
+
     protected function json($data, $status = 200)
     {
         http_response_code($status);

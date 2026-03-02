@@ -146,4 +146,47 @@ class LogController extends Controller
             'distinctMeterTypes' => $distinctMeterTypes,
         ]);
     }
+
+    /**
+     * GET /logs/dashboard2
+     * Modern AI dashboard v2
+     */
+    public function dashboard2()
+    {
+        $filters = [
+            'date_from' => $_GET['date_from'] ?? date('Y-m-d', strtotime('-30 days')),
+            'date_to' => $_GET['date_to'] ?? date('Y-m-d'),
+            'model_name' => $_GET['model_name'] ?? '',
+            'prompt_version' => $_GET['prompt_version'] ?? '',
+            'image_type' => $_GET['image_type'] ?? '',
+            'soDanhBo' => $_GET['soDanhBo'] ?? '',
+            'loaiDongHo_new' => $_GET['loaiDongHo_new'] ?? '',
+        ];
+
+        // Overall metrics
+        $overallMetrics = MeterReadingLog::getDashboardMetrics($filters)[0] ?? [];
+
+        // Metrics by Model
+        $modelMetrics = MeterReadingLog::getDashboardMetrics($filters, 'model_name');
+
+        // Metrics by Meter Type
+        $typeMetrics = MeterReadingLog::getDashboardMetrics($filters, 'loaiDongHo_new');
+
+        // Distinct items for filters
+        $distinctModels = MeterReadingLog::distinctModels();
+        $distinctPromptVersions = MeterReadingLog::distinctPromptVersions();
+        $distinctImageTypes = MeterReadingLog::distinctImageTypes();
+        $distinctMeterTypes = MeterReadingLog::distinctMeterTypes();
+
+        $this->viewRaw('logs/dashboard2', [
+            'filters' => $filters,
+            'overall' => $overallMetrics,
+            'byModel' => $modelMetrics,
+            'byType' => $typeMetrics,
+            'distinctModels' => $distinctModels,
+            'distinctPromptVersions' => $distinctPromptVersions,
+            'distinctImageTypes' => $distinctImageTypes,
+            'distinctMeterTypes' => $distinctMeterTypes,
+        ]);
+    }
 }

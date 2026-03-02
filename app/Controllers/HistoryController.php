@@ -43,6 +43,9 @@ class HistoryController extends Controller
         $pricingModel = new \App\Models\GeminiPricing();
         $llmModels = $pricingModel->all();
 
+        // Pass distinct types for the search filter
+        $distinctLoaiDongHo = History::getDistinctLoaiDongHo();
+
         $this->view('history/index', [
             'history' => $history,
             'page' => $page,
@@ -50,6 +53,7 @@ class HistoryController extends Controller
             'filters' => $filters,
             'meterTypes' => $meterTypes,
             'llmModels' => $llmModels,
+            'distinctLoaiDongHo' => $distinctLoaiDongHo,
         ]);
     }
 
@@ -93,5 +97,32 @@ class HistoryController extends Controller
 
         History::updateMeterType($id, $loaiDongHo_new);
         return $this->json(['success' => true, 'message' => 'Đã cập nhật loại đồng hồ']);
+    }
+
+    /**
+     * POST /history/save-prompt-info
+     */
+    public function savePromptInfo()
+    {
+        $id = isset($_POST['id']) ? (int) $_POST['id'] : null;
+        $promptTxt = $_POST['promptText'] ?? null;
+        $modelName = $_POST['modelName'] ?? null;
+        $promptVersion = $_POST['promptVersion'] ?? null;
+        $applyScope = $_POST['applyScope'] ?? 'id'; // default to only this record
+
+        $editUser = $_SESSION['username'] ?? 'User_' . ($_SESSION['user_id'] ?? 'Unknown');
+
+        if (!$id) {
+            return $this->json(['error' => 'Missing ID'], 400);
+        }
+
+        $count = History::updatePromptInfo($id, $promptTxt, $modelName, $promptVersion, $editUser, $applyScope);
+
+        $msg = 'Đã lưu cấu hình prompt';
+        if ($applyScope !== 'id' && $count > 1) {
+            $msg = "Đã cập nhật cấu hình prompt cho $count bản ghi";
+        }
+
+        return $this->json(['success' => true, 'message' => $msg, 'updated_count' => $count]);
     }
 }
