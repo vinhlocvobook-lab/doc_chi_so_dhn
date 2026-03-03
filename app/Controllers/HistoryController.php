@@ -28,6 +28,7 @@ class HistoryController extends Controller
             'loaiDongHo' => $_GET['loaiDongHo'] ?? '',
             'loaiDongHo_new' => $_GET['loaiDongHo_new'] ?? '',
             'soDanhBo' => $_GET['soDanhBo'] ?? '',
+            'image_type' => isset($_GET['image_type']) && is_array($_GET['image_type']) ? $_GET['image_type'] : [],
             'coHinh' => isset($_GET['filter']) ? (isset($_GET['coHinh']) ? 1 : 0) : 1,
         ];
 
@@ -50,6 +51,7 @@ class HistoryController extends Controller
             'history' => $history,
             'page' => $page,
             'totalPages' => $totalPages,
+            'totalItems' => $totalItems, // Added totalItems
             'filters' => $filters,
             'meterTypes' => $meterTypes,
             'llmModels' => $llmModels,
@@ -97,6 +99,23 @@ class HistoryController extends Controller
 
         History::updateMeterType($id, $loaiDongHo_new);
         return $this->json(['success' => true, 'message' => 'Đã cập nhật loại đồng hồ']);
+    }
+
+    /**
+     * POST /history/update-image-type
+     * Update image_type for one record
+     */
+    public function updateImageType()
+    {
+        $id = isset($_POST['id']) ? (int) $_POST['id'] : null;
+        $image_type = isset($_POST['image_type']) && $_POST['image_type'] !== '' ? $_POST['image_type'] : null;
+
+        if (!$id) {
+            return $this->json(['error' => 'Missing ID'], 400);
+        }
+
+        History::updateImageType($id, $image_type);
+        return $this->json(['success' => true, 'message' => 'Đã cập nhật phân loại ảnh']);
     }
 
     /**

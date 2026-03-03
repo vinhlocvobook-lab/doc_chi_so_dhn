@@ -34,6 +34,10 @@ class AiReadController extends Controller
         header('Connection: keep-alive');
         header('X-Accel-Buffering: no');
 
+        // Increase execution time for long AI tasks
+        set_time_limit(300);
+        ignore_user_abort(true);
+
         // Disable output buffering
         if (function_exists('apache_setenv')) {
             apache_setenv('no-gzip', '1');

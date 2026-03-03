@@ -88,6 +88,16 @@ document.addEventListener('DOMContentLoaded', () => {
             if (usePartial && newResults) {
                 resultsArea.innerHTML = newResults.innerHTML;
                 executeScripts(resultsArea);
+
+                // Sync "Show all details" state if active
+                const toggleBtn = document.getElementById('btn-toggle-all');
+                if (toggleBtn && toggleBtn.textContent === 'Ẩn tất cả chi tiết') {
+                    resultsArea.querySelectorAll('.detail-row').forEach(row => {
+                        row.style.display = 'table-row';
+                        const content = row.querySelector('.detail-content');
+                        if (content) content.classList.add('fade-in');
+                    });
+                }
             } else {
                 contentArea.innerHTML = html;
                 executeScripts(contentArea);

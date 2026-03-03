@@ -1,0 +1,120 @@
+============================================================
+[2026-03-02 03:51:21] ID: 84953 | SDB: 23051010015 | Model: gemini-2.5-flash-lite-preview-09-2025
+Status: thanh_cong | Time: 6599ms
+AI Chi So: 134112348 | Parse: 13411234
+Human Chi So: 1341123 | Match: 0
+Score POC: 5/100 [AI_KHONG_DAT_YEU_CAU]
+Score TT : 30/100 [TU_CHOI]
+Tokens: P=492 O=360 T=0
+Cost: 5.096616 VND
+Giải thích: The main display shows '13411234.8' (implied decimal based on common meter displays or the smaller number '7837' potentially being flow rate). Following the instruction to keep only the leftmost digits representing whole cubic meters and considering the main large number, the reading is taken as 134112348 (assuming the last digit is the first decimal place if it were a full register, but based on the instruction to remove decimals and keep whole cubic meters, we keep the leading digits). The reading 134112348 has 9 digits. Keeping the leftmost 8 digits for whole cubic meters as per the instruction to keep 5-7 digits if more are present, but since the main reading is one continuous large number, we treat the whole displayed integer part as the index. If the display is 13411234.8 m^3, the whole part is 13411234. If the entire visible number is intended, we take 134112348. Given the ambiguity, taking the number before the implied decimal/flow rate: 134112348 is the large visible number. Taking the integer part by dropping the last digit (the smallest fraction): 13411234.
+============================================================
+
+============================================================
+[2026-03-02 03:54:24] ID: 84953 | SDB: 23051010015 | Model: gemini-2.5-flash-lite-preview-09-2025
+Status: thanh_cong | Time: 2995ms
+AI Chi So: 134112348 | Parse: 134112
+Human Chi So: 1341123 | Match: 0
+Score POC: 6/100 [AI_KHONG_DAT_YEU_CAU]
+Score TT : 20/100 [TU_CHOI]
+Tokens: P=497 O=152 T=0
+Cost: 2.914990 VND
+Giải thích: The main cumulative index displayed is 134112348. Since the requirement is to keep only the integer part representing whole cubic meters and remove the last 3 digits (decimals/fractions), the integer part is 134112. The lower reading '17837 m3/h' is likely a flow rate, which is ignored.
+============================================================
+
+============================================================
+[2026-03-02 03:56:06] ID: 84953 | SDB: 23051010015 | Model: gemini-2.5-flash-lite-preview-09-2025
+Status: thanh_cong | Time: 5147ms
+AI Chi So: 134112348 | Parse: 13411234
+Human Chi So: 1341123 | Match: 0
+Score POC: 5/100 [AI_KHONG_DAT_YEU_CAU]
+Score TT : 30/100 [TU_CHOI]
+Tokens: P=497 O=124 T=0
+Cost: 2.619534 VND
+Giải thích: The main cumulative reading is 134112348. The two rightmost digits (8) are considered the fractional part (e.g., liters or smaller units). The integer part representing whole cubic meters is 13411234.
+============================================================
+
+============================================================
+[2026-03-02 03:58:13] ID: 84953 | SDB: 23051010015 | Model: gemini-2.5-flash-lite-preview-09-2025
+Status: loi_api | Time: 28874ms
+Error: Lỗi HTTP 503: This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.
+============================================================
+
+============================================================
+[2026-03-02 03:58:33] ID: 84953 | SDB: 23051010015 | Model: gemini-flash-lite-latest
+Status: loi_api | Time: 2434ms
+Error: Lỗi HTTP 503: This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.
+============================================================
+
+============================================================
+[2026-03-02 03:58:53] ID: 84953 | SDB: 23051010015 | Model: gemini-flash-latest
+Status: thanh_cong | Time: 10631ms
+AI Chi So: 134112348 | Parse: 1341123
+Human Chi So: 1341123 | Match: 1
+Score POC: 100/100 [AI_CHINH_XAC_CAO]
+Score TT : 90/100 [TU_DONG_CHAP_NHAN]
+Tokens: P=1311 O=126 T=1202
+Cost: 122.390010 VND
+Giải thích: Màn hình hiển thị chỉ số tổng là 134112348 với đơn vị m3. Theo hướng dẫn loại bỏ 2 chữ số cuối (phần thập phân), phần nguyên là 1341123.
+============================================================
+
+============================================================
+[2026-03-02 04:00:50] ID: 84953 | SDB: 23051010015 | Model: gemini-2.5-flash-lite
+Status: thanh_cong | Time: 2379ms
+AI Chi So: 134112348 | Parse: 1341123
+Human Chi So: 1341123 | Match: 1
+Score POC: 100/100 [AI_CHINH_XAC_CAO]
+Score TT : 90/100 [TU_DONG_CHAP_NHAN]
+Tokens: P=505 O=109 T=0
+Cost: 2.482358 VND
+Giải thích: The main cumulative water index is 134112348. After removing the two decimal digits, the whole cubic meter index is 1341123.
+============================================================
+
+============================================================
+[2026-03-02 04:02:14] ID: 38276 | SDB: 23051010015 | Model: gemini-2.5-flash-lite
+Status: thanh_cong | Time: 3718ms
+AI Chi So: 83179668 | Parse: 831796
+Human Chi So: 831796 | Match: 1
+Score POC: 100/100 [AI_CHINH_XAC_CAO]
+Score TT : 100/100 [TU_DONG_CHAP_NHAN]
+Tokens: P=505 O=112 T=0
+Cost: 2.514014 VND
+Giải thích: The main cumulative water index displayed on the meter is 83179668. To get the whole cubic meters, we remove the last two digits, resulting in 831796.
+============================================================
+
+============================================================
+[2026-03-02 04:03:50] ID: 31685 | SDB: 23051010015 | Model: gemini-2.5-flash-lite
+Status: thanh_cong | Time: 4800ms
+AI Chi So: 77784809 | Parse: 777848
+Human Chi So: 777848 | Match: 1
+Score POC: 100/100 [AI_CHINH_XAC_CAO]
+Score TT : 100/100 [TU_DONG_CHAP_NHAN]
+Tokens: P=505 O=115 T=0
+Cost: 2.545670 VND
+Giải thích: The main cumulative water index displayed on the meter is 77784809. After removing the last two digits (which represent fractional cubic meters), the whole cubic meter reading is 777848.
+============================================================
+
+============================================================
+[2026-03-02 04:04:35] ID: 58208 | SDB: 23051010015 | Model: gemini-2.5-flash-lite
+Status: thanh_cong | Time: 5345ms
+AI Chi So: 101039.72 | Parse: 101039
+Human Chi So: 1010397 | Match: 0
+Score POC: 0/100 [AI_KHONG_DAT_YEU_CAU]
+Score TT : 20/100 [TU_CHOI]
+Tokens: P=505 O=106 T=0
+Cost: 2.450702 VND
+Giải thích: The main cumulative water index displayed on the meter is 101039.72. Removing the two decimal digits results in 101039.
+============================================================
+
+============================================================
+[2026-03-02 04:13:44] ID: 58208 | SDB: 23051010015 | Model: gemini-2.5-flash
+Status: thanh_cong | Time: 6138ms
+AI Chi So: 1010397.27 | Parse: 1010397
+Human Chi So: 1010397 | Match: 1
+Score POC: 100/100 [AI_CHINH_XAC_CAO]
+Score TT : 90/100 [TU_DONG_CHAP_NHAN]
+Tokens: P=505 O=137 T=308
+Cost: 33.344320 VND
+Giải thích: The main cumulative index '1010397.27' was read from the top line of the meter's digital display. The fractional part '.27' was removed to get the whole cubic meters reading of '1010397'. No serial number was clearly visible on the meter face.
+============================================================
+

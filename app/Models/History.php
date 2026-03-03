@@ -34,6 +34,29 @@ class History
             $sql .= " AND soDanhBo LIKE ?";
             $params[] = "%" . $filters['soDanhBo'] . "%";
         }
+        if (!empty($filters['image_type']) && is_array($filters['image_type'])) {
+            $types = $filters['image_type'];
+            $conditions = [];
+            $inValues = [];
+
+            if (in_array('__NULL__', $types)) {
+                $conditions[] = "(image_type IS NULL OR image_type = '')";
+                $types = array_filter($types, fn($v) => $v !== '__NULL__');
+            }
+
+            if (!empty($types)) {
+                $inClause = implode(',', array_fill(0, count($types), '?'));
+                $conditions[] = "image_type IN ($inClause)";
+                foreach ($types as $t) {
+                    $inValues[] = $t;
+                }
+            }
+
+            if (!empty($conditions)) {
+                $sql .= " AND (" . implode(' OR ', $conditions) . ")";
+                $params = array_merge($params, $inValues);
+            }
+        }
         if (isset($filters['coHinh']) && $filters['coHinh'] == 1) {
             $sql .= " AND linkHinhDongHo IS NOT NULL AND linkHinhDongHo != ''";
         }
@@ -114,6 +137,16 @@ class History
         $db = Database::getInstance();
         $stmt = $db->prepare("UPDATE chisodhn SET loaiDongHo_new = ? WHERE id = ?");
         return $stmt->execute([$loaiDongHo_new ?: null, $id]);
+    }
+
+    /**
+     * Update image_type for a single record
+     */
+    public static function updateImageType(int $id, ?string $image_type): bool
+    {
+        $db = Database::getInstance();
+        $stmt = $db->prepare("UPDATE chisodhn SET image_type = ? WHERE id = ?");
+        return $stmt->execute([$image_type ?: null, $id]);
     }
 
     /**

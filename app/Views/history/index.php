@@ -46,7 +46,6 @@
                     <?php endforeach; ?>
             </datalist>
         </div>
-        <!-- NEW: loaiDongHo_new filter -->
         <div class="filter-group">
             <label>Loại ĐH (chuẩn)</label>
             <select name="loaiDongHo_new" class="filter-input">
@@ -61,6 +60,31 @@
                     </option>
                 <?php endforeach; ?>
             </select>
+        </div>
+        <div class="filter-group">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                <label style="margin-bottom: 0;">Phân loại ảnh</label>
+                <div style="font-size: 0.75rem;">
+                    <a href="javascript:void(0)" onclick="toggleSelectAll('image_type_select', true)"
+                        style="color: #4ade80; text-decoration: none;">Chọn hết</a>
+                    <span style="color: rgba(255,255,255,0.2); margin: 0 4px;">|</span>
+                    <a href="javascript:void(0)" onclick="toggleSelectAll('image_type_select', false)"
+                        style="color: #f87171; text-decoration: none;">Bỏ chọn</a>
+                </div>
+            </div>
+            <select name="image_type[]" id="image_type_select" class="filter-input" multiple size="4"
+                style="height: auto;">
+                <option value="__NULL__" <?= in_array('__NULL__', $filters['image_type']) ? 'selected' : '' ?>>Chưa phân
+                    loại</option>
+                <option value="hinh_ro" <?= in_array('hinh_ro', $filters['image_type']) ? 'selected' : '' ?>>Hình rõ
+                    (hinh_ro)</option>
+                <option value="hinh_mo" <?= in_array('hinh_mo', $filters['image_type']) ? 'selected' : '' ?>>Hình mờ
+                    (hinh_mo)</option>
+                <option value="hinh_khong_day_du" <?= in_array('hinh_khong_day_du', $filters['image_type']) ? 'selected' : '' ?>>Hình không đầy đủ</option>
+                <option value="hinh_khong_doc_duoc" <?= in_array('hinh_khong_doc_duoc', $filters['image_type']) ? 'selected' : '' ?>>Hình không đọc được</option>
+            </select>
+            <div style="font-size: 0.75rem; color: #a5b4fc; margin-top: 4px;">Giữ Ctrl/Cmd để chọn nhiều. (Trống = Tất
+                cả)</div>
         </div>
         <div class="filter-group" style="flex-direction: row; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
             <input type="checkbox" name="coHinh" value="1" id="coHinh" <?= $filters['coHinh'] ? 'checked' : '' ?>>
@@ -79,7 +103,7 @@
                         <th>Năm</th>
                         <th>Tháng</th>
                         <th>Loại ĐH (chuẩn)</th>
-                        <th>S/N</th>
+                        <th>Số Danh Bộ</th>
                         <th>Hình</th>
                         <th>Thời gian</th>
                         <th>Thao tác</th>
@@ -97,12 +121,17 @@
                                     <span
                                         style="font-size:0.8rem; padding:2px 8px; background:rgba(79,70,229,0.12); color:#4f46e5; border-radius:4px; font-weight:600;">
                                         <?= htmlspecialchars($item['loaiDongHo_new']) ?>
-                                    </span>
+                                    </span> <br />
+                                    <span
+                                        style="color:#94a3b8; font-size:0.8rem;"><?= htmlspecialchars($item['loaiDongHo']) ?></span>
+                                    <br />
+                                    <span style="color:#94a3b8; font-size:0.8rem;">
+                                        <?= htmlspecialchars($item['soSerial']) ?></span>
                                 <?php else: ?>
                                     <span style="color:#94a3b8; font-size:0.8rem;">chưa phân loại</span>
                                 <?php endif; ?>
                             </td>
-                            <td><?= $item['soSerial'] ?></td>
+                            <td><?= $item['soDanhBo'] ?></td>
                             <td>
                                 <?php if ($item['linkHinhDongHo']): ?>
                                     <span title="Có hình ảnh" style="color: #4ade80; font-size: 1.2rem;">●</span>
@@ -120,6 +149,11 @@
                                         🔧 Loại ĐH
                                     </button>
                                     <?php if (!empty($item['linkHinhDongHo'])): ?>
+                                        <button class="btn btn-secondary"
+                                            style="padding: 5px 10px; font-size: 0.85rem; background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3);"
+                                            onclick="openEditImageType(<?= $item['id'] ?>, '<?= addslashes(htmlspecialchars($item['image_type'] ?? '')) ?>', '<?= addslashes(htmlspecialchars($item['soDanhBo'])) ?>')">
+                                            🖼️ Phân loại ảnh
+                                        </button>
                                         <button class="btn"
                                             style="padding:5px 10px; font-size:0.85rem; background:rgba(139,92,246,0.15); color:#a78bfa; border:1px solid rgba(139,92,246,0.3);"
                                             data-ai-prompt="<?= htmlspecialchars($item['eff_prompt_txt'] ?? '') ?>"
@@ -143,6 +177,10 @@
                                             <div><strong>Loại ĐH (chuẩn):</strong>
                                                 <span
                                                     style="color:#a5b4fc;"><?= htmlspecialchars($item['loaiDongHo_new'] ?? '—') ?></span>
+                                            </div>
+                                            <div><strong>Phân loại ảnh:</strong>
+                                                <span
+                                                    style="color:#4ade80;"><?= htmlspecialchars($item['image_type'] ?? '—') ?></span>
                                             </div>
                                             <div><strong>Năm/Tháng:</strong> <?= $item['nam'] ?>/<?= $item['thang'] ?></div>
                                             <div><strong>Chỉ số TN:</strong> <?= $item['chiSoNuocTN'] ?></div>
@@ -181,20 +219,60 @@
 
         <!-- Pagination -->
         <?php if ($totalPages > 1): ?>
+            <div style="margin-top: 1rem; color: rgba(255,255,255,0.6); font-size: 0.9rem; text-align: center;">
+                Tổng số: <strong><?= number_format($totalItems) ?></strong> dòng · Trang <strong><?= $page ?></strong> /
+                <strong><?= $totalPages ?></strong>
+            </div>
             <div class="pagination">
+                <!-- First Page -->
                 <?php if ($page > 1): ?>
-                    <a href="?<?= http_build_query(array_merge($_GET, ['page' => $page - 1])) ?>" class="page-link">Trước</a>
+                    <a href="/?<?= http_build_query(array_merge($_GET, ['page' => 1])) ?>" class="page-link"
+                        title="Trang đầu">«</a>
+                <?php endif; ?>
+
+                <!-- Jump -10 -->
+                <?php if ($page > 10): ?>
+                    <a href="/?<?= http_build_query(array_merge($_GET, ['page' => max(1, $page - 10)])) ?>" class="page-link"
+                        title="Lùi 10 trang">-10</a>
+                <?php endif; ?>
+
+                <!-- Jump -5 -->
+                <?php if ($page > 5): ?>
+                    <a href="/?<?= http_build_query(array_merge($_GET, ['page' => max(1, $page - 5)])) ?>" class="page-link"
+                        title="Lùi 5 trang">-5</a>
+                <?php endif; ?>
+
+                <?php if ($page > 1): ?>
+                    <a href="/?<?= http_build_query(array_merge($_GET, ['page' => $page - 1])) ?>" class="page-link">Trước</a>
                 <?php endif; ?>
                 <?php
                 $start = max(1, $page - 2);
                 $end = min($totalPages, $page + 2);
                 for ($i = $start; $i <= $end; $i++):
                     ?>
-                    <a href="?<?= http_build_query(array_merge($_GET, ['page' => $i])) ?>"
+                    <a href="/?<?= http_build_query(array_merge($_GET, ['page' => $i])) ?>"
                         class="page-link <?= $i == $page ? 'active' : '' ?>"><?= $i ?></a>
                 <?php endfor; ?>
                 <?php if ($page < $totalPages): ?>
-                    <a href="?<?= http_build_query(array_merge($_GET, ['page' => $page + 1])) ?>" class="page-link">Sau</a>
+                    <a href="/?<?= http_build_query(array_merge($_GET, ['page' => $page + 1])) ?>" class="page-link">Sau</a>
+                <?php endif; ?>
+
+                <!-- Jump +5 -->
+                <?php if ($page <= $totalPages - 5): ?>
+                    <a href="/?<?= http_build_query(array_merge($_GET, ['page' => min($totalPages, $page + 5)])) ?>"
+                        class="page-link" title="Tiếp 5 trang">+5</a>
+                <?php endif; ?>
+
+                <!-- Jump +10 -->
+                <?php if ($page <= $totalPages - 10): ?>
+                    <a href="/?<?= http_build_query(array_merge($_GET, ['page' => min($totalPages, $page + 10)])) ?>"
+                        class="page-link" title="Tiếp 10 trang">+10</a>
+                <?php endif; ?>
+
+                <!-- Last Page -->
+                <?php if ($page < $totalPages): ?>
+                    <a href="/?<?= http_build_query(array_merge($_GET, ['page' => $totalPages])) ?>" class="page-link"
+                        title="Trang cuối">»</a>
                 <?php endif; ?>
             </div>
         <?php endif; ?>
@@ -293,7 +371,11 @@
                 if (result.success) {
                     window.toast(result.message || 'Đã lưu!');
                     window.closeEditMeterType();
-                    window.loadPage(window.location.pathname + window.location.search);
+                    if (window.loadPage) {
+                        window.loadPage(window.location.pathname + window.location.search, true);
+                    } else {
+                        window.location.reload();
+                    }
                 } else {
                     window.toast('Lỗi: ' + (result.error || 'Không xác định'), 'error');
                 }
@@ -301,6 +383,13 @@
                 window.toast('Lỗi kết nối: ' + e.message, 'error');
             } finally {
                 btn.disabled = false; btn.textContent = 'Lưu';
+            }
+        };
+        window.toggleSelectAll = function (selectId, status) {
+            const select = document.getElementById(selectId);
+            if (!select) return;
+            for (let i = 0; i < select.options.length; i++) {
+                select.options[i].selected = status;
             }
         };
     })();
@@ -789,6 +878,85 @@
                 }).join('');
             } catch (e) {
                 body.innerHTML = '<div style="color:#f87171;">Lỗi: ' + e.message + '</div>';
+            }
+        };
+    })();
+</script>
+
+<!-- Edit Image Type Modal -->
+<div id="edit-imagetype-modal"
+    style="display:none; position:fixed; z-index:1000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.7); backdrop-filter:blur(5px);">
+    <div class="glass-card" style="width:90%; max-width:480px; margin:8rem auto; padding:2rem; position:relative;">
+        <span onclick="closeEditImageType()"
+            style="position:absolute; right:1.5rem; top:1rem; font-size:2rem; cursor:pointer; color:white;">&times;</span>
+        <h2 style="color:var(--primary); margin-bottom:0.5rem;">🖼️ Phân loại ảnh</h2>
+        <p id="edit-it-sodb" style="color:rgba(255,255,255,0.6); font-size:0.85rem; margin-bottom:1.5rem;"></p>
+
+        <div class="filter-group">
+            <label>Loại Hình Ảnh</label>
+            <select id="edit-it-select" class="filter-input">
+                <option value="">— Chưa phân loại —</option>
+                <option value="hinh_ro">Hình rõ (hinh_ro)</option>
+                <option value="hinh_mo">Hình mờ (hinh_mo)</option>
+                <option value="hinh_khong_day_du">Hình không đầy đủ (hinh_khong_day_du)</option>
+                <option value="hinh_khong_doc_duoc">Hình không đọc được (hinh_khong_doc_duoc)</option>
+            </select>
+        </div>
+
+        <div style="margin-top:1.5rem; display:flex; gap:1rem; justify-content:flex-end;">
+            <button class="btn btn-secondary" onclick="closeEditImageType()">Hủy</button>
+            <button class="btn btn-primary" id="edit-it-save-btn" onclick="saveEditImageType()">Lưu</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function () {
+        let _editItId = null;
+
+        window.openEditImageType = function (id, currentVal, soDanhBo) {
+            _editItId = id;
+            document.getElementById('edit-it-sodb').textContent = 'ID #' + id + ' · Số danh bộ: ' + soDanhBo;
+            document.getElementById('edit-it-select').value = currentVal || '';
+            document.getElementById('edit-imagetype-modal').style.display = 'block';
+        };
+
+        window.closeEditImageType = function () {
+            document.getElementById('edit-imagetype-modal').style.display = 'none';
+            _editItId = null;
+        };
+
+        window.saveEditImageType = async function () {
+            if (!_editItId) return;
+            const sel = document.getElementById('edit-it-select').value;
+            const btn = document.getElementById('edit-it-save-btn');
+            btn.disabled = true; btn.textContent = 'Đang lưu...';
+
+            const fd = new FormData();
+            fd.append('id', _editItId);
+            fd.append('image_type', sel);
+
+            try {
+                const res = await fetch('/history/update-image-type', {
+                    method: 'POST', body: fd,
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                });
+                const result = await res.json();
+                if (result.success) {
+                    window.toast(result.message || 'Đã lưu!');
+                    window.closeEditImageType();
+                    if (window.loadPage) {
+                        window.loadPage(window.location.pathname + window.location.search, true);
+                    } else {
+                        window.location.reload();
+                    }
+                } else {
+                    window.toast('Lỗi: ' + (result.error || 'Không xác định'), 'error');
+                }
+            } catch (e) {
+                window.toast('Lỗi kết nối: ' + e.message, 'error');
+            } finally {
+                btn.disabled = false; btn.textContent = 'Lưu';
             }
         };
     })();

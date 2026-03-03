@@ -1,0 +1,15 @@
+# AI Agent Rules for WaterMeter Project
+
+As an AI agent working on this project, you MUST follow these strictly:
+
+1.  **Architecture**: This is a custom PHP MVC project.
+    -   Models in `app/Models/`
+    -   Views in `app/Views/`
+    -   Controllers in `app/Controllers/`
+2.  **SPA Engine**: The project uses a custom SPA mechanism.
+    -   Navigation/Form submits are AJAX-based (see `public/assets/js/app.js`).
+    -   NEVER use `window.location.reload()` for success handling in JS.
+    -   ALWAYS use `window.loadPage(window.location.pathname + window.location.search, true)` to refresh data containers.
+3.  **Security**: Use prepared statements with PDO for all database queries.
+4.  **UI/UX**: Maintain the Glassmorphism theme (transparent cards, blurred backgrounds, Inter font).
+5.  **Context**: Always check `PROJECT_ARCHITECTURE.md` before proposing major changes.
