@@ -11,44 +11,47 @@
 
     <!-- Filter Form -->
     <form action="/" method="GET" class="filter-form glass-card"
-        style="padding: 1.5rem; background: rgba(255,255,255,0.2);">
+        style="padding: 1.5rem; background: rgba(255,255,255,0.15);">
         <input type="hidden" name="filter" value="1">
+
         <div class="filter-group">
-            <label>Năm</label>
-            <select name="nam" class="filter-input">
-                <option value="">Tất cả</option>
-                <?php for ($y = date('Y'); $y >= 2024; $y--): ?>
-                    <option value="<?= $y ?>" <?= $filters['nam'] == $y ? 'selected' : '' ?>><?= $y ?></option>
-                <?php endfor; ?>
-            </select>
+            <label>Thời gian</label>
+            <div class="filter-row-compact">
+                <select name="nam" class="filter-input" style="width: 100px;">
+                    <option value="">Năm</option>
+                    <?php for ($y = date('Y'); $y >= 2024; $y--): ?>
+                        <option value="<?= $y ?>" <?= $filters['nam'] == $y ? 'selected' : '' ?>><?= $y ?></option>
+                    <?php endfor; ?>
+                </select>
+                <select name="thang" class="filter-input" style="width: 100px;">
+                    <option value="">Tháng</option>
+                    <?php for ($m = 1; $m <= 12; $m++): ?>
+                        <option value="<?= $m ?>" <?= $filters['thang'] == $m ? 'selected' : '' ?>>T.<?= $m ?></option>
+                    <?php endfor; ?>
+                </select>
+            </div>
         </div>
-        <div class="filter-group">
-            <label>Tháng</label>
-            <select name="thang" class="filter-input">
-                <option value="">Tất cả</option>
-                <?php for ($m = 1; $m <= 12; $m++): ?>
-                    <option value="<?= $m ?>" <?= $filters['thang'] == $m ? 'selected' : '' ?>>Tháng <?= $m ?></option>
-                <?php endfor; ?>
-            </select>
-        </div>
+
         <div class="filter-group">
             <label>Số danh bộ</label>
-            <input type="text" name="soDanhBo" class="filter-input" placeholder="Nhập số..."
+            <input type="text" name="soDanhBo" class="filter-input" placeholder="Nhập số..." style="width: 160px;"
                 value="<?= htmlspecialchars($filters['soDanhBo']) ?>">
         </div>
+
         <div class="filter-group">
             <label>Loại ĐH (API)</label>
             <input list="loaiDongHoList" name="loaiDongHo" class="filter-input" placeholder="Chọn hoặc nhập..."
-                value="<?= htmlspecialchars($filters['loaiDongHo']) ?>">
+                style="width: 180px;" value="<?= htmlspecialchars($filters['loaiDongHo']) ?>">
             <datalist id="loaiDongHoList">
                 <?php foreach ($distinctLoaiDongHo as $type): ?>
                     <option value="<?= htmlspecialchars($type) ?>">
                     <?php endforeach; ?>
             </datalist>
         </div>
+
         <div class="filter-group">
             <label>Loại ĐH (chuẩn)</label>
-            <select name="loaiDongHo_new" class="filter-input">
+            <select name="loaiDongHo_new" class="filter-input" style="width: 180px;">
                 <option value="">Tất cả</option>
                 <option value="__NULL__" <?= $filters['loaiDongHo_new'] === '__NULL__' ? 'selected' : '' ?>>
                     — Chưa phân loại —
@@ -61,36 +64,65 @@
                 <?php endforeach; ?>
             </select>
         </div>
+
         <div class="filter-group">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
                 <label style="margin-bottom: 0;">Phân loại ảnh</label>
-                <div style="font-size: 0.75rem;">
-                    <a href="javascript:void(0)" onclick="toggleSelectAll('image_type_select', true)"
-                        style="color: #4ade80; text-decoration: none;">Chọn hết</a>
-                    <span style="color: rgba(255,255,255,0.2); margin: 0 4px;">|</span>
-                    <a href="javascript:void(0)" onclick="toggleSelectAll('image_type_select', false)"
-                        style="color: #f87171; text-decoration: none;">Bỏ chọn</a>
+            </div>
+            <div class="multi-select-container" id="image-type-ms">
+                <div class="ms-display" onclick="toggleMsDropdown(this)">
+                    <span class="ms-label">Tất cả loại ảnh</span>
+                    <span style="font-size: 0.7rem;">▼</span>
+                </div>
+                <div class="ms-dropdown glass-card" style="background: white; border: 1px solid #e2e8f0;">
+                    <div class="ms-option" onclick="event.stopPropagation()">
+                        <label
+                            style="color:#475569; font-weight:400; display:flex; align-items:center; gap:8px; cursor:pointer; width:100%;">
+                            <input type="checkbox" value="__NULL__" name="image_type[]" <?= in_array('__NULL__', $filters['image_type']) ? 'checked' : '' ?> onchange="updateMsLabel(this)">
+                            Chưa phân loại
+                        </label>
+                    </div>
+                    <?php
+                    $imgTypes = [
+                        'hinh_ro' => 'Hình rõ (hinh_ro)',
+                        'hinh_mo' => 'Hình mờ (hinh_mo)',
+                        'so_bi_mo' => 'Số bị mờ (so_bi_mo)',
+                        'hinh_bi_choi' => 'Hình bị chói sáng',
+                        'hinh_khong_day_du' => 'Hình không đầy đủ',
+                        'nhieu_dong_ho' => 'Nhiều đồng hồ',
+                        'hinh_khong_doc_duoc' => 'Hình không đọc được'
+                    ];
+                    foreach ($imgTypes as $val => $lbl): ?>
+                        <div class="ms-option" onclick="event.stopPropagation()">
+                            <label
+                                style="color:#475569; font-weight:400; display:flex; align-items:center; gap:8px; cursor:pointer; width:100%;">
+                                <input type="checkbox" value="<?= $val ?>" name="image_type[]" <?= in_array($val, $filters['image_type']) ? 'checked' : '' ?> onchange="updateMsLabel(this)">
+                                <?= $lbl ?>
+                            </label>
+                        </div>
+                    <?php endforeach; ?>
+                    <div
+                        style="padding: 8px 12px; border-top: 1px solid #f1f5f9; display: flex; gap: 10px; font-size: 0.75rem;">
+                        <a href="javascript:void(0)" onclick="selectAllMs(this, true)"
+                            style="color:var(--emerald); font-weight:600; text-decoration:none;">Chọn hết</a>
+                        <a href="javascript:void(0)" onclick="selectAllMs(this, false)"
+                            style="color:#ef4444; font-weight:600; text-decoration:none;">Bỏ chọn</a>
+                    </div>
                 </div>
             </div>
-            <select name="image_type[]" id="image_type_select" class="filter-input" multiple size="4"
-                style="height: auto;">
-                <option value="__NULL__" <?= in_array('__NULL__', $filters['image_type']) ? 'selected' : '' ?>>Chưa phân
-                    loại</option>
-                <option value="hinh_ro" <?= in_array('hinh_ro', $filters['image_type']) ? 'selected' : '' ?>>Hình rõ
-                    (hinh_ro)</option>
-                <option value="hinh_mo" <?= in_array('hinh_mo', $filters['image_type']) ? 'selected' : '' ?>>Hình mờ
-                    (hinh_mo)</option>
-                <option value="hinh_khong_day_du" <?= in_array('hinh_khong_day_du', $filters['image_type']) ? 'selected' : '' ?>>Hình không đầy đủ</option>
-                <option value="hinh_khong_doc_duoc" <?= in_array('hinh_khong_doc_duoc', $filters['image_type']) ? 'selected' : '' ?>>Hình không đọc được</option>
-            </select>
-            <div style="font-size: 0.75rem; color: #a5b4fc; margin-top: 4px;">Giữ Ctrl/Cmd để chọn nhiều. (Trống = Tất
-                cả)</div>
         </div>
-        <div class="filter-group" style="flex-direction: row; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
-            <input type="checkbox" name="coHinh" value="1" id="coHinh" <?= $filters['coHinh'] ? 'checked' : '' ?>>
-            <label for="coHinh" style="margin-bottom: 0; cursor: pointer;">Có hình ảnh</label>
+
+        <div class="filter-group" style="flex-direction: row; align-items: center; gap: 0.4rem; padding-bottom: 8px;">
+            <input type="checkbox" name="coHinh" value="1" id="coHinh" <?= $filters['coHinh'] ? 'checked' : '' ?>
+                style="width:16px; height:16px;">
+            <label for="coHinh"
+                style="margin-bottom: 0; cursor: pointer; color: white; text-transform:none; font-weight:500;">Có hình
+                ảnh</label>
         </div>
-        <button type="submit" class="btn btn-primary" style="margin-bottom: 0.2rem;">Tìm kiếm</button>
+
+        <button type="submit" class="btn btn-emerald" style="height: 40px; min-width: 120px;">
+            <span>🔍</span> Tìm kiếm
+        </button>
     </form>
 
     <div id="history-results">
@@ -132,36 +164,36 @@
                                 <?php endif; ?>
                             </td>
                             <td><?= $item['soDanhBo'] ?></td>
-                            <td>
-                                <?php if ($item['linkHinhDongHo']): ?>
-                                    <span title="Có hình ảnh" style="color: #4ade80; font-size: 1.2rem;">●</span>
+                            <td style="text-align: center;">
+                                <?php if (!empty($item['linkHinhDongHo'])): ?>
+                                    <img src="<?= htmlspecialchars($item['linkHinhDongHo']) ?>" class="meter-thumbnail"
+                                        onclick="toggleRow(<?= $item['id'] ?>)" title="Click để xem chi tiết">
                                 <?php else: ?>
-                                    <span title="Không có hình" style="color: #f87171; font-size: 1.2rem;">○</span>
+                                    <div
+                                        style="width:48px; height:48px; background:rgba(0,0,0,0.05); border-radius:8px; display:flex; align-items:center; justify-content:center; color:#94a3b8; font-size:0.75rem;">
+                                        Không hình
+                                    </div>
                                 <?php endif; ?>
                             </td>
                             <td><?= date('d/m/Y H:i', strtotime($item['created_at'])) ?></td>
                             <td>
-                                <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
-                                    <button class="btn btn-primary" style="padding: 5px 10px; font-size: 0.85rem;"
-                                        onclick="toggleRow(<?= $item['id'] ?>)">Chi tiết</button>
-                                    <button class="btn btn-secondary" style="padding: 5px 10px; font-size: 0.85rem;"
-                                        onclick="openEditMeterType(<?= $item['id'] ?>, '<?= addslashes(htmlspecialchars($item['loaiDongHo_new'] ?? '')) ?>', '<?= addslashes(htmlspecialchars($item['soDanhBo'])) ?>')">
-                                        🔧 Loại ĐH
-                                    </button>
+                                <div style="display:flex; gap:0.5rem; align-items:center;">
+                                    <button class="action-icon-btn" onclick="toggleRow(<?= $item['id'] ?>)"
+                                        title="Chi tiết">👁️</button>
+                                    <button class="action-icon-btn"
+                                        onclick="openEditMeterType(<?= $item['id'] ?>, '<?= addslashes(htmlspecialchars($item['loaiDongHo_new'] ?? '')) ?>', '<?= addslashes(htmlspecialchars($item['soDanhBo'])) ?>')"
+                                        title="Loại Đồng Hồ">🔧</button>
+
                                     <?php if (!empty($item['linkHinhDongHo'])): ?>
-                                        <button class="btn btn-secondary"
-                                            style="padding: 5px 10px; font-size: 0.85rem; background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3);"
-                                            onclick="openEditImageType(<?= $item['id'] ?>, '<?= addslashes(htmlspecialchars($item['image_type'] ?? '')) ?>', '<?= addslashes(htmlspecialchars($item['soDanhBo'])) ?>')">
-                                            🖼️ Phân loại ảnh
-                                        </button>
-                                        <button class="btn"
-                                            style="padding:5px 10px; font-size:0.85rem; background:rgba(139,92,246,0.15); color:#a78bfa; border:1px solid rgba(139,92,246,0.3);"
+                                        <button class="action-icon-btn" style="color:#60a5fa;"
+                                            onclick="openEditImageType(<?= $item['id'] ?>, '<?= addslashes(htmlspecialchars($item['image_type'] ?? '')) ?>', '<?= addslashes(htmlspecialchars($item['soDanhBo'])) ?>')"
+                                            title="Phân loại ảnh">🖼️</button>
+                                        <button class="action-icon-btn" style="color:#a78bfa;"
                                             data-ai-prompt="<?= htmlspecialchars($item['eff_prompt_txt'] ?? '') ?>"
                                             data-ai-model="<?= htmlspecialchars($item['eff_llm_models'] ?? '') ?>"
                                             data-ai-version="<?= htmlspecialchars($item['eff_prompt_version'] ?? '') ?>"
-                                            onclick="openAiRead(<?= $item['id'] ?>, '<?= addslashes(htmlspecialchars($item['linkHinhDongHo'])) ?>', '<?= addslashes(htmlspecialchars($item['soDanhBo'])) ?>', <?= (int) $item['chiSoNuoc'] ?>, this)">
-                                            🤖 Test AI
-                                        </button>
+                                            onclick="openAiRead(<?= $item['id'] ?>, '<?= addslashes(htmlspecialchars($item['linkHinhDongHo'])) ?>', '<?= addslashes(htmlspecialchars($item['soDanhBo'])) ?>', <?= (int) $item['chiSoNuoc'] ?>, this)"
+                                            title="Test AI">🤖</button>
                                     <?php endif; ?>
                                 </div>
                             </td>
@@ -417,23 +449,36 @@
 
         <!-- Config row -->
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
-            <div>
+            <div style="grid-column: span 2;">
                 <label
-                    style="font-size:0.75rem; font-weight:600; color:rgba(167,139,250,0.9); text-transform:uppercase; letter-spacing:0.04em;">Mô
-                    hình AI</label>
-                <select id="ai-read-model"
-                    style="width:100%; padding:8px 12px; border-radius:8px; background:rgba(255,255,255,0.06); border:1px solid rgba(139,92,246,0.3); color:#f1f5f9; font-size:0.9rem; outline:none;">
+                    style="font-size:0.75rem; font-weight:600; color:rgba(167,139,250,0.9); text-transform:uppercase; letter-spacing:0.04em; display:block; margin-bottom:0.5rem;">
+                    Chọn Mô hình AI (theo thứ tự ưu tiên)
+                </label>
+
+                <!-- Available models -->
+                <div style="margin-bottom:0.75rem; display:flex; flex-wrap:wrap; gap:0.5rem;">
                     <?php foreach ($llmModels as $lm): ?>
-                        <option value="<?= htmlspecialchars($lm['model_name']) ?>">
-                            <?= htmlspecialchars($lm['model_name']) ?>
-                        </option>
+                        <button type="button" class="llm-chip ai-read-model-chip"
+                            data-model="<?= htmlspecialchars($lm['model_name']) ?>"
+                            onclick="addAiModel('<?= htmlspecialchars($lm['model_name'], ENT_QUOTES) ?>')">
+                            + <?= htmlspecialchars($lm['model_name']) ?>
+                        </button>
                     <?php endforeach; ?>
-                </select>
-            </div>
-            <div style="display:flex; align-items:flex-end;">
-                <button type="button" onclick="viewPastLogs()"
-                    style="width:100%; padding:8px 12px; border-radius:8px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); color:rgba(255,255,255,0.65); cursor:pointer; font-size:0.8rem;">📋
-                    Lịch sử đọc</button>
+                </div>
+
+                <!-- Selected models (prioritized) -->
+                <div id="ai-read-selected-models"
+                    style="min-height:50px; border:1px dashed rgba(139,92,246,0.2); border-radius:10px; padding:0.6rem; background:rgba(255,255,255,0.02); display:flex; flex-direction:column; gap:0.4rem; margin-bottom:1rem;">
+                    <div id="ai-read-empty-hint"
+                        style="color:rgba(255,255,255,0.3); font-size:0.8rem; text-align:center; padding:0.5rem;">Chưa
+                        chọn mô hình nào</div>
+                </div>
+
+                <div style="display:flex; justify-content:flex-end;">
+                    <button type="button" onclick="viewPastLogs()"
+                        style="padding:6px 14px; border-radius:8px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); color:rgba(255,255,255,0.65); cursor:pointer; font-size:0.8rem;">📋
+                        Lịch sử đọc</button>
+                </div>
             </div>
         </div>
 
@@ -560,6 +605,109 @@
             }
         ];
 
+        window._lastScoreDetails = null;
+
+        window.showScoreBreakdown = function (type) {
+            const details = window._lastScoreDetails ? window._lastScoreDetails[type] : null;
+            if (!details) {
+                window.toast('Không có dữ liệu chi tiết cho điểm này', 'error');
+                return;
+            }
+
+            const title = type === 'poc' ? 'Chi tiết Score POC (Giai đoạn 1)' : 'Chi tiết Score Thực tế (Giai đoạn 2)';
+            let html = `
+                <div style="background:rgba(15,23,42,0.95); padding:1.5rem; border-radius:16px; border:1px solid rgba(139,92,246,0.3); width:100%; max-width:450px; position:relative; box-shadow:0 20px 50px rgba(0,0,0,0.5);">
+                    <button onclick="this.parentElement.parentElement.remove()" style="position:absolute; top:1rem; right:1rem; background:none; border:none; color:white; font-size:1.2rem; cursor:pointer;">✕</button>
+                    <h3 style="color:#a78bfa; margin-bottom:1.2rem; font-size:1rem;">${title}</h3>
+                    <div style="display:flex; flex-direction:column; gap:1rem;">
+            `;
+
+            for (const key in details) {
+                const item = details[key];
+                const keyLabel = key === 'so_sat' ? 'So sát chỉ số' :
+                    key === 'ky_tu' ? 'Độ chính xác ký tự' :
+                        key === 'hop_ly' ? 'Tính hợp lý' :
+                            key === 'do_lech' ? 'Độ lệch trung bình' :
+                                key === 'doc_duoc' ? 'Khả năng đọc' : key;
+
+                html += `
+                    <div style="padding:0.8rem; background:rgba(255,255,255,0.05); border-radius:10px; border:1px solid rgba(255,255,255,0.08);">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem;">
+                            <span style="color:rgba(255,255,255,0.6); font-size:0.75rem; text-transform:uppercase;">${keyLabel}</span>
+                            <span style="color:#4ade80; font-weight:700;">${item.diem}<span style="font-size:0.7rem; font-weight:400; color:rgba(255,255,255,0.3);">/${item.toi_da}</span></span>
+                        </div>
+                        <div style="color:white; font-size:0.85rem;">${item.ly_do}</div>
+                    </div>
+                `;
+            }
+
+            html += `
+                    </div>
+                    <p style="margin-top:1.2rem; font-size:0.7rem; color:rgba(255,255,255,0.4); font-style:italic;">* Logic tính điểm dựa trên WaterMeterRationalityChecker.php</p>
+                </div>
+            `;
+
+            const overlay = document.createElement('div');
+            overlay.id = 'score-breakdown-overlay';
+            overlay.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); display:flex; align-items:center; justify-content:center; z-index:10000; backdrop-filter:blur(4px);';
+            overlay.innerHTML = html;
+            overlay.onclick = function (e) { if (e.target === overlay) overlay.remove(); };
+            document.body.appendChild(overlay);
+        };
+
+        let _selectedAiModels = [];
+
+        window.renderAiModels = function () {
+            const list = document.getElementById('ai-read-selected-models');
+            const hint = document.getElementById('ai-read-empty-hint');
+            if (!list) return;
+
+            list.querySelectorAll('.llm-selected-row').forEach(r => r.remove());
+
+            if (_selectedAiModels.length === 0) {
+                if (hint) hint.style.display = 'block';
+            } else {
+                if (hint) hint.style.display = 'none';
+                _selectedAiModels.forEach((model, idx) => {
+                    const row = document.createElement('div');
+                    row.className = 'llm-selected-row';
+                    row.innerHTML = `
+                        <span class="llm-priority-badge">${idx + 1}</span>
+                        <span class="llm-name" style="font-size:0.85rem;">${model}</span>
+                        <div style="display:flex; gap:4px;">
+                            <button type="button" class="llm-move-btn" onclick="moveAiModel(${idx},-1)" ${idx === 0 ? 'disabled style="opacity:0.3"' : ''}>↑</button>
+                            <button type="button" class="llm-move-btn" onclick="moveAiModel(${idx},1)" ${idx === _selectedAiModels.length - 1 ? 'disabled style="opacity:0.3"' : ''}>↓</button>
+                            <button type="button" class="llm-remove-btn" onclick="removeAiModel('${model}')">✕</button>
+                        </div>
+                    `;
+                    list.appendChild(row);
+                });
+            }
+            // Update chips
+            document.querySelectorAll('.ai-read-model-chip').forEach(chip => {
+                chip.classList.toggle('used', _selectedAiModels.includes(chip.dataset.model));
+            });
+        };
+
+        window.addAiModel = function (model) {
+            if (!_selectedAiModels.includes(model)) {
+                _selectedAiModels.push(model);
+                renderAiModels();
+            }
+        };
+
+        window.removeAiModel = function (model) {
+            _selectedAiModels = _selectedAiModels.filter(m => m !== model);
+            renderAiModels();
+        };
+
+        window.moveAiModel = function (idx, dir) {
+            const ni = idx + dir;
+            if (ni < 0 || ni >= _selectedAiModels.length) return;
+            [_selectedAiModels[idx], _selectedAiModels[ni]] = [_selectedAiModels[ni], _selectedAiModels[idx]];
+            renderAiModels();
+        };
+
         window.openAiRead = function (id, imgUrl, sodb, humanCS, btnEl) {
             _aiReadId = id;
             _aiReadSDB = sodb;
@@ -576,11 +724,28 @@
 
             if (btnEl) {
                 const lastPromptTxt = btnEl.getAttribute('data-ai-prompt');
-                const lastModel = btnEl.getAttribute('data-ai-model');
+                const lastModelsRaw = btnEl.getAttribute('data-ai-model'); // This might be a JSON string now
                 const lastVersion = btnEl.getAttribute('data-ai-version');
 
                 document.getElementById('ai-read-prompt').value = lastPromptTxt || '';
-                if (lastModel) document.getElementById('ai-read-model').value = lastModel;
+
+                // Parse models
+                _selectedAiModels = [];
+                if (lastModelsRaw) {
+                    try {
+                        const parsed = JSON.parse(lastModelsRaw);
+                        if (Array.isArray(parsed)) {
+                            // Extract model_name if it's an array of objects
+                            _selectedAiModels = parsed.map(m => typeof m === 'object' ? m.model_name : m).filter(Boolean);
+                        } else {
+                            _selectedAiModels = [lastModelsRaw];
+                        }
+                    } catch (e) {
+                        _selectedAiModels = [lastModelsRaw];
+                    }
+                }
+                renderAiModels();
+
                 document.getElementById('ai-read-prompt-version').value = lastVersion || '';
                 document.getElementById('ai-read-prompt-scope').value = 'id';
             }
@@ -622,14 +787,21 @@
 
         window.savePromptInfo = async function (event) {
             if (!_aiReadId) return;
-            const model = document.getElementById('ai-read-model').value;
+            if (_selectedAiModels.length === 0) {
+                window.toast('Vui lòng chọn ít nhất một mô hình AI', 'error');
+                return;
+            }
             const prompt = document.getElementById('ai-read-prompt').value.trim();
             const version = document.getElementById('ai-read-prompt-version').value.trim();
             const scope = document.getElementById('ai-read-prompt-scope').value;
 
+            // Convert selected models to priority list
+            const modelListForDb = _selectedAiModels.map((m, i) => ({ priority: i + 1, model_name: m }));
+            const modelJson = JSON.stringify(modelListForDb);
+
             const fd = new FormData();
             fd.append('id', _aiReadId);
-            fd.append('modelName', model);
+            fd.append('modelName', modelJson); // Send as JSON string
             fd.append('promptText', prompt);
             fd.append('promptVersion', version);
             fd.append('applyScope', scope);
@@ -647,11 +819,11 @@
                 const result = await res.json();
                 if (result.success) {
                     window.toast(result.message || 'Đã lưu cấu hình prompt!');
-                    // Optionally update the list button attributes here
+                    // Update current button data to reflect changes immediately
                     const btnEl = document.querySelector(`button[onclick*="openAiRead(${_aiReadId},"]`);
                     if (btnEl) {
                         btnEl.setAttribute('data-ai-prompt', prompt);
-                        btnEl.setAttribute('data-ai-model', model);
+                        btnEl.setAttribute('data-ai-model', modelJson);
                         btnEl.setAttribute('data-ai-version', version);
                     }
                 } else {
@@ -667,8 +839,12 @@
 
         window.startAiRead = function () {
             if (!_aiReadId) return;
-            const model = document.getElementById('ai-read-model').value;
+            if (_selectedAiModels.length === 0) {
+                window.toast('Vui lòng chọn ít nhất một mô hình AI', 'error');
+                return;
+            }
             const prompt = document.getElementById('ai-read-prompt').value.trim();
+            const modelJson = JSON.stringify(_selectedAiModels); // Send just array of names for simplicity in controller loop
             if (!prompt) { alert('Vui lòng nhập prompt!'); return; }
 
             // Reset UI
@@ -684,7 +860,7 @@
             // Build SSE URL
             const params = new URLSearchParams({
                 id: _aiReadId,
-                model_name: model,
+                model_names: modelJson,
                 prompt_text: prompt
             });
             const url = '/history/ai-read?' + params.toString();
@@ -792,14 +968,25 @@
             const sTT = d.score_thuc_te;
             const pocColor = getScorePocColor(sPoc);
             const ttColor = getScoreTTColor(sTT);
+
+            // Store details globally for the modal
+            window._lastScoreDetails = {
+                poc: d.score_poc_details,
+                tt: d.score_thuc_te_details
+            };
+
             html += `
             <div style="margin-top:0.8rem; display:flex; gap:0.8rem; flex-wrap:wrap;">
-                <div style="flex:1; min-width:140px; padding:0.7rem; background:rgba(255,255,255,0.04); border:1px solid ${pocColor}33; border-radius:10px; text-align:center;">
+                <div style="flex:1; min-width:140px; padding:0.7rem; background:rgba(255,255,255,0.04); border:1px solid ${pocColor}33; border-radius:10px; text-align:center; position:relative;">
+                    <button type="button" onclick="showScoreBreakdown('poc')" 
+                            style="position:absolute; top:5px; right:5px; background:none; border:none; color:rgba(255,255,255,0.3); cursor:pointer; font-size:0.9rem; padding:2px;" title="Xem chi tiết cách tính">ⓘ</button>
                     <div style="font-size:0.65rem; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:0.05em;">Score POC</div>
                     <div style="font-size:1.6rem; font-weight:800; color:${pocColor}; margin:2px 0;">${sPoc ?? '—'}<span style="font-size:0.7rem; font-weight:400;">/100</span></div>
                     <div style="font-size:0.7rem; color:${pocColor}; opacity:0.85;">${getMucDoLabel(d.muc_do_poc)}</div>
                 </div>
-                <div style="flex:1; min-width:140px; padding:0.7rem; background:rgba(255,255,255,0.04); border:1px solid ${ttColor}33; border-radius:10px; text-align:center;">
+                <div style="flex:1; min-width:140px; padding:0.7rem; background:rgba(255,255,255,0.04); border:1px solid ${ttColor}33; border-radius:10px; text-align:center; position:relative;">
+                    <button type="button" onclick="showScoreBreakdown('tt')" 
+                            style="position:absolute; top:5px; right:5px; background:none; border:none; color:rgba(255,255,255,0.3); cursor:pointer; font-size:0.9rem; padding:2px;" title="Xem chi tiết cách tính">ⓘ</button>
                     <div style="font-size:0.65rem; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:0.05em;">Score Thực tế</div>
                     <div style="font-size:1.6rem; font-weight:800; color:${ttColor}; margin:2px 0;">${sTT ?? '—'}<span style="font-size:0.7rem; font-weight:400;">/100</span></div>
                     <div style="font-size:0.7rem; color:${ttColor}; opacity:0.85;">${getMucDoLabel(d.muc_do_thuc_te)}</div>
@@ -898,8 +1085,11 @@
                 <option value="">— Chưa phân loại —</option>
                 <option value="hinh_ro">Hình rõ (hinh_ro)</option>
                 <option value="hinh_mo">Hình mờ (hinh_mo)</option>
+                <option value="so_bi_mo">Số bị mờ (so_bi_mo)</option>
+                <option value="hinh_bi_choi">Hình bị chói (hinh_bi_choi)</option>
                 <option value="hinh_khong_day_du">Hình không đầy đủ (hinh_khong_day_du)</option>
                 <option value="hinh_khong_doc_duoc">Hình không đọc được (hinh_khong_doc_duoc)</option>
+                <option value="nhieu_dong_ho">Nhiều đồng hồ (nhieu_dong_ho)</option>
             </select>
         </div>
 
@@ -959,5 +1149,54 @@
                 btn.disabled = false; btn.textContent = 'Lưu';
             }
         };
+
+        // Custom Multi-select Logic
+        window.toggleMsDropdown = function (el) {
+            const dropdown = el.nextElementSibling;
+            const isOpen = dropdown.style.display === 'block';
+            document.querySelectorAll('.ms-dropdown').forEach(d => d.style.display = 'none');
+            dropdown.style.display = isOpen ? 'none' : 'block';
+        };
+
+        window.updateMsLabel = function (checkbox) {
+            const container = checkbox.closest('.multi-select-container');
+            const labelEl = container.querySelector('.ms-label');
+            const checked = container.querySelectorAll('input[type="checkbox"]:checked');
+
+            if (checked.length === 0) {
+                labelEl.textContent = 'Tất cả loại ảnh';
+            } else if (checked.length === 1) {
+                labelEl.textContent = checked[0].parentElement.textContent.trim();
+            } else {
+                labelEl.textContent = checked.length + ' mục đã chọn';
+            }
+        };
+
+        window.selectAllMs = function (el, status) {
+            const container = el.closest('.multi-select-container');
+            const checkboxes = container.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(cb => {
+                cb.checked = status;
+                updateMsLabel(cb);
+            });
+        };
+
+        window.updateImageTypeLabelOnLoad = function () {
+            const ms = document.getElementById('image-type-ms');
+            if (ms) {
+                const firstCb = ms.querySelector('input[type="checkbox"]');
+                if (firstCb) updateMsLabel(firstCb);
+            }
+        };
+
+        // Initialize label
+        window.updateImageTypeLabelOnLoad();
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('.multi-select-container')) {
+                document.querySelectorAll('.ms-dropdown').forEach(d => d.style.display = 'none');
+            }
+        });
     })();
 </script>

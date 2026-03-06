@@ -23,7 +23,7 @@ class AiReadController extends Controller
     }
 
     /**
-     * GET /history/ai-read?id=...&model_name=...&prompt_text=...
+     * GET /history/ai-read?id=...&model_names=...&prompt_text=...
      * Server-Sent Events endpoint for real-time progress.
      */
     public function stream()
@@ -35,7 +35,7 @@ class AiReadController extends Controller
         header('X-Accel-Buffering: no');
 
         // Increase execution time for long AI tasks
-        set_time_limit(300);
+        set_time_limit(600); // 10 minutes max for multiple models
         ignore_user_abort(true);
 
         // Disable output buffering
@@ -48,11 +48,28 @@ class AiReadController extends Controller
 
         // ── Parse inputs ──
         $id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
-        $modelName = $_GET['model_name'] ?? '';
+        $modelNamesRaw = $_GET['model_names'] ?? $_GET['model_name'] ?? ''; // Support both single and multiple
         $promptText = $_GET['prompt_text'] ?? '';
 
-        if (!$id || !$modelName || !$promptText) {
-            $this->sse('error_event', ['message' => 'Thiếu tham số: id, model_name, prompt_text']);
+        if (!$id || !$modelNamesRaw || !$promptText) {
+            $this->sse('error_event', ['message' => 'Thiếu tham số: id, model_names, prompt_text']);
+            return;
+        }
+
+        $models = [];
+        try {
+            $decoded = json_decode($modelNamesRaw, true);
+            if (is_array($decoded)) {
+                $models = $decoded;
+            } else {
+                $models = [$modelNamesRaw];
+            }
+        } catch (\Exception $e) {
+            $models = [$modelNamesRaw];
+        }
+
+        if (empty($models)) {
+            $this->sse('error_event', ['message' => 'Danh sách mô hình trống']);
             return;
         }
 
@@ -108,31 +125,76 @@ class AiReadController extends Controller
             'label' => '✅ Đã tải hình ảnh (' . round(strlen($imgData) / 1024) . ' KB)'
         ]);
 
-        // ── Step 3: Call Gemini API ──
-        $this->sse('progress', ['step' => 'calling_api', 'label' => "🤖 Đang gọi AI ({$modelName})..."]);
+        // ── Step 3: Loop through models ──
+        $finalSuccess = false;
+        $lastResult = null;
+        $lastModelUsed = '';
+        $attemptsTotal = count($models);
 
-        $apiStartedAt = date('Y-m-d H:i:s');
-        $startTime = microtime(true);
-        $trangThai = 'thanh_cong';
-        $thongBaoLoi = null;
-        $result = null;
+        foreach ($models as $index => $currentModel) {
+            $attemptNum = $index + 1;
+            $this->sse('progress', [
+                'step' => 'calling_api',
+                'label' => "🤖 [Lượt {$attemptNum}/{$attemptsTotal}] Đang thử đọc bằng: {$currentModel}..."
+            ]);
 
-        try {
-            $gemini = new Gemini();
-            $result = $gemini->prompt_image($targetPath, $promptText, $modelName);
-        } catch (\Exception $e) {
-            $trangThai = 'loi_api';
-            $thongBaoLoi = $e->getMessage();
-            $this->sse('progress', ['step' => 'api_error', 'label' => '❌ Lỗi API: ' . $e->getMessage()]);
-        }
+            $apiStartedAt = date('Y-m-d H:i:s');
+            $startTime = microtime(true);
+            $trangThai = 'thanh_cong';
+            $thongBaoLoi = null;
+            $result = null;
 
-        $apiCompletedAt = date('Y-m-d H:i:s');
-        $thoiGianXuLy = (int) ((microtime(true) - $startTime) * 1000); // ms
+            try {
+                $gemini = new Gemini();
+                $result = $gemini->prompt_image($targetPath, $promptText, $currentModel);
+            } catch (\Exception $e) {
+                $trangThai = 'loi_api';
+                $thongBaoLoi = $e->getMessage();
+            }
 
-        if (!$result || !empty($result['error'])) {
+            $apiCompletedAt = date('Y-m-d H:i:s');
+            $thoiGianXuLy = (int) ((microtime(true) - $startTime) * 1000); // ms
+
+            // Check if successful
+            if ($result && empty($result['error'])) {
+                // Potential success, check content
+                $content = $result['data']['content'] ?? null;
+                if ($content) {
+                    // We found a result!
+                    $finalSuccess = true;
+                    $lastResult = $result;
+                    $lastModelUsed = $currentModel;
+
+                    // Log success and break loop
+                    $this->processAndSaveResult(
+                        $id,
+                        $record,
+                        $currentModel,
+                        $promptText,
+                        $result,
+                        $thoiGianXuLy,
+                        $apiStartedAt,
+                        $apiCompletedAt,
+                        $relativeImgPath,
+                        $imageUrl
+                    );
+                    break;
+                } else {
+                    $trangThai = 'loi_parse';
+                    $thongBaoLoi = 'AI trả về kết quả rỗng (không parse được JSON/nội dung)';
+                }
+            }
+
+            // If we are here, this model failed
+            $this->sse('progress', [
+                'step' => 'model_failed',
+                'label' => "⚠️ Mô hình {$currentModel} thất bại: " . ($thongBaoLoi ?: 'Lỗi không xác định')
+            ]);
+
+            // Always log attempt
             $logData = [
                 'id_data' => $id,
-                'model_name' => $modelName,
+                'model_name' => $currentModel,
                 'prompt_text' => $promptText,
                 'trang_thai_api' => $trangThai ?: 'loi_api',
                 'thong_bao_loi' => $thongBaoLoi ?: ($result['message'] ?? 'Unknown error'),
@@ -141,18 +203,38 @@ class AiReadController extends Controller
                 'thoi_gian_xu_ly' => $thoiGianXuLy,
                 'img_dhn' => $relativeImgPath,
                 'linkHinhDongHo' => $imageUrl,
+                'image_type' => $record['image_type'] ?? null,
+                'retry_count' => $index,
             ];
             try {
                 MeterReadingLog::create($logData);
             } catch (\Exception $e) { /* ignore */
             }
+            $this->writeLogFile($id, $record, $currentModel, $trangThai, $logData, null);
 
-            $this->writeLogFile($id, $record, $modelName, $trangThai, $logData, null);
-            $this->sse('error_event', ['message' => $thongBaoLoi ?: ($result['message'] ?? 'Lỗi không xác định')]);
-            return;
+            // Continue to next model
         }
 
-        // ── Step 4: Parse result ──
+        if (!$finalSuccess) {
+            $this->sse('error_event', ['message' => 'Tất cả các mô hình AI đều không đọc được hoặc gặp lỗi.']);
+        }
+    }
+
+    /**
+     * Parse result, evaluate, calculate scores, save to DB and send SSE done.
+     */
+    private function processAndSaveResult(
+        int $id,
+        array $record,
+        string $modelName,
+        string $promptText,
+        array $result,
+        int $thoiGianXuLy,
+        string $apiStartedAt,
+        string $apiCompletedAt,
+        string $relativeImgPath,
+        string $imageUrl
+    ): void {
         $this->sse('progress', ['step' => 'parsing', 'label' => '📊 Đang phân tích kết quả...']);
 
         $data = $result['data'] ?? [];
@@ -168,21 +250,16 @@ class AiReadController extends Controller
             $aiChiSo = $content['chi_so'] ?? $content['chiSo'] ?? null;
             $phanNguyen = $content['chi_so_phan_nguyen'] ?? $content['phan_nguyen'] ?? $content['phanNguyen'] ?? null;
 
-            // Prioritize phanNguyen (integer part) if available
             if ($phanNguyen !== null && trim((string) $phanNguyen) !== '' && trim((string) $phanNguyen) !== 'N/A') {
                 $cleaned = str_replace([' ', ','], '', (string) $phanNguyen);
                 $numericOnly = preg_replace('/[^0-9]/', '', $cleaned);
                 $aiChiSoParse = ($numericOnly !== '') ? (int) $numericOnly : null;
             } elseif ($aiChiSo !== null && trim((string) $aiChiSo) !== '' && trim((string) $aiChiSo) !== 'N/A') {
                 $rawVal = (string) $aiChiSo;
-
-                // Check for 'X' characters before stripping
                 if (stripos($rawVal, 'x') !== false) {
                     $coKyTuX = 1;
                     $soKyTuX = substr_count(strtolower($rawVal), 'x');
                 }
-
-                // Handle decimals: take part before '.' or ','
                 $normalized = str_replace([' ', ','], ['', '.'], $rawVal);
                 $parts = explode('.', $normalized);
                 $integerStr = $parts[0];
@@ -200,14 +277,13 @@ class AiReadController extends Controller
         $isExactMatch = null;
         $saiSo = null;
         $saiSoTuyetDoi = null;
-
         if ($humanChiSo !== null && $aiChiSoParse !== null) {
             $isExactMatch = ($aiChiSoParse == $humanChiSo) ? 1 : 0;
             $saiSo = $aiChiSoParse - (int) $humanChiSo;
             $saiSoTuyetDoi = abs($saiSo);
         }
 
-        // ── Step 4b: Char accuracy ──
+        // Char accuracy
         $charAccuracy = $this->tinhCharAccuracy($aiChiSoParse, $humanChiSo !== null ? (int) $humanChiSo : null);
         $charMatchCount = null;
         $charTotalCount = null;
@@ -218,7 +294,7 @@ class AiReadController extends Controller
             $charMatchCount = $charAccuracy !== null ? (int) round($charAccuracy * $charTotalCount) : null;
         }
 
-        // ── Step 4c: Rationality + Scoring ──
+        // Rationality + Scoring
         $chiSoTN = (float) ($record['chiSoNuocTN'] ?? 0);
         $luongTT = isset($record['luongNuocTieuThuThangTruoc']) && $record['luongNuocTieuThuThangTruoc'] !== null
             ? (float) $record['luongNuocTieuThuThangTruoc'] : null;
@@ -267,7 +343,7 @@ class AiReadController extends Controller
             ]
         ]);
 
-        // ── Step 5: Save to DB ──
+        // Save to DB
         $this->sse('progress', ['step' => 'saving', 'label' => '💾 Đang lưu kết quả...']);
 
         $logData = [
@@ -289,7 +365,6 @@ class AiReadController extends Controller
             'api_started_at' => $apiStartedAt,
             'api_completed_at' => $apiCompletedAt,
             'trang_thai_api' => 'thanh_cong',
-            // So sánh AI vs Human
             'human_chi_so' => $humanChiSo,
             'is_exact_match' => $isExactMatch,
             'sai_so' => $saiSo,
@@ -297,18 +372,16 @@ class AiReadController extends Controller
             'char_match_count' => $charMatchCount,
             'char_total_count' => $charTotalCount,
             'char_accuracy_rate' => $charAccuracy,
-            // Đánh giá hợp lý
             'is_rationality' => $danhGia['is_rationality'] !== null ? ($danhGia['is_rationality'] ? 1 : 0) : null,
             'luong_tieu_thu_ai' => $danhGia['luong_tieu_thu'],
             'nguong_hop_ly_min' => $danhGia['nguong_min'],
             'nguong_hop_ly_max' => $danhGia['nguong_max'],
             'ly_do_bat_hop_ly' => $danhGia['is_rationality'] === false ? $danhGia['ly_do'] : null,
-            // Score POC (Giai đoạn 1)
+            'image_type' => $record['image_type'] ?? null,
             'score_so_sat' => $scorePoc['score_so_sat'],
             'score_ky_tu_poc' => $scorePoc['score_ky_tu_poc'],
             'score_poc' => $scorePoc['score_poc'],
             'muc_do_poc' => $scorePoc['muc_do_poc'],
-            // Score Thực tế (Giai đoạn 2)
             'score_hop_ly' => $scoreTT['score_hop_ly'],
             'score_do_lech_tb' => $scoreTT['score_do_lech_tb'],
             'score_doc_duoc' => $scoreTT['score_doc_duoc'],
@@ -325,10 +398,8 @@ class AiReadController extends Controller
             $this->sse('progress', ['step' => 'save_warning', 'label' => '⚠️ Lỗi DB: ' . $e->getMessage()]);
         }
 
-        // ── Step 6: Write file log ──
         $this->writeLogFile($id, $record, $modelName, 'thanh_cong', $logData, $content, $scorePoc, $scoreTT);
 
-        // ── Step 7: Done ──
         $this->sse('done', [
             'log_id' => $logId,
             'ai_chi_so' => $aiChiSo,
@@ -342,6 +413,8 @@ class AiReadController extends Controller
             'muc_do_poc' => $scorePoc['muc_do_poc'],
             'score_thuc_te' => $scoreTT['score_thuc_te'],
             'muc_do_thuc_te' => $scoreTT['muc_do_thuc_te'],
+            'score_poc_details' => $scorePoc['chi_tiet'] ?? [],
+            'score_thuc_te_details' => $scoreTT['chi_tiet'] ?? [],
             'content' => $content,
             'tokens' => [
                 'prompt' => $data['prompt_tokens'] ?? 0,
@@ -357,10 +430,6 @@ class AiReadController extends Controller
         ]);
     }
 
-    /**
-     * GET /history/ai-read-logs?id_data=...
-     * Return past reading logs for a record.
-     */
     public function logs()
     {
         $idData = isset($_GET['id_data']) ? (int) $_GET['id_data'] : 0;
@@ -371,11 +440,6 @@ class AiReadController extends Controller
         return $this->json($logs);
     }
 
-    // ── Helpers ──────────────────────────────────────────────────────
-
-    /**
-     * Send an SSE event.
-     */
     private function sse(string $event, array $data): void
     {
         echo "event: {$event}\n";
@@ -385,10 +449,6 @@ class AiReadController extends Controller
         flush();
     }
 
-    /**
-     * Tính tỷ lệ ký tự khớp giữa AI và Human.
-     * So sánh từng chữ số, trả về 0.0 – 1.0
-     */
     private function tinhCharAccuracy(?int $aiVal, ?int $humanVal): ?float
     {
         if ($aiVal === null || $humanVal === null)
@@ -399,7 +459,6 @@ class AiReadController extends Controller
         if ($maxLen === 0)
             return 1.0;
 
-        // Pad shorter string with leading zeros
         $aiStr = str_pad($aiStr, $maxLen, '0', STR_PAD_LEFT);
         $humanStr = str_pad($humanStr, $maxLen, '0', STR_PAD_LEFT);
 
@@ -408,12 +467,9 @@ class AiReadController extends Controller
             if ($aiStr[$i] === $humanStr[$i])
                 $match++;
         }
-        return round($match / $maxLen, 4);
+        return (float) round($match / $maxLen, 4);
     }
 
-    /**
-     * Write log to file: log_doc_chi_so/YYYY/MM/DD/log.txt
-     */
     private function writeLogFile(
         int $id,
         array $record,
@@ -430,38 +486,28 @@ class AiReadController extends Controller
             if (!is_dir($dir)) {
                 mkdir($dir, 0777, true);
             }
-
             $logFile = $dir . '/log.txt';
             $line = str_repeat('=', 60) . "\n";
             $entry = $line;
-            $entry .= "[{$date->format('Y-m-d H:i:s')}] ID: {$id} | SDB: {$record['soDanhBo']} | Model: {$model}\n";
+            $entry .= "[{$date->format('Y-m-d H:i:s')}] ID: {$id} | SDB: {$record['soDanhBo']} | Model: {$model} | Type: " . ($record['image_type'] ?? 'N/A') . "\n";
             $entry .= "Status: {$status} | Time: {$logData['thoi_gian_xu_ly']}ms\n";
-
             if ($content) {
                 $entry .= "AI Chi So: " . ($logData['ai_chi_so'] ?? 'N/A') . " | Parse: " . ($logData['ai_chi_so_parse'] ?? 'N/A') . "\n";
                 $entry .= "Human Chi So: " . ($logData['human_chi_so'] ?? 'N/A') . " | Match: " . ($logData['is_exact_match'] ?? '?') . "\n";
-
-                if (!empty($scorePoc)) {
+                if (!empty($scorePoc))
                     $entry .= "Score POC: {$scorePoc['score_poc']}/100 [{$scorePoc['muc_do_poc']}]\n";
-                }
-                if (!empty($scoreTT)) {
+                if (!empty($scoreTT))
                     $entry .= "Score TT : {$scoreTT['score_thuc_te']}/100 [{$scoreTT['muc_do_thuc_te']}]\n";
-                }
-
                 $entry .= "Tokens: P={$logData['prompt_tokens']} O={$logData['output_tokens']} T={$logData['thinking_tokens']}\n";
                 $entry .= "Cost: " . number_format($logData['chi_phi_vnd'] ?? 0, 6) . " VND\n";
-
-                if (isset($content['giai_thich_chi_so'])) {
+                if (isset($content['giai_thich_chi_so']))
                     $entry .= "Giải thích: {$content['giai_thich_chi_so']}\n";
-                }
             } else {
                 $entry .= "Error: " . ($logData['thong_bao_loi'] ?? 'Unknown') . "\n";
             }
             $entry .= $line . "\n";
-
             file_put_contents($logFile, $entry, FILE_APPEND | LOCK_EX);
         } catch (\Exception $e) {
-            // Silently fail — don't break SSE stream
         }
     }
 }

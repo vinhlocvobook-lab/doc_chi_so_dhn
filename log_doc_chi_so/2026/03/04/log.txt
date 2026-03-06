@@ -1,0 +1,324 @@
+============================================================
+[2026-03-04 02:48:44] ID: 58351 | SDB: 23061010030 | Model: gemini-3-flash-preview | Type: N/A
+Status: thanh_cong | Time: 18573ms
+AI Chi So: 012.4888 | Parse: 124888
+Human Chi So: 424888 | Match: 0
+Score POC: 33/100 [AI_KHONG_DAT_YEU_CAU]
+Score TT : 20/100 [TU_CHOI]
+Tokens: P=1257 O=134 T=2734
+Cost: 243.553350 VND
+Giải thích: Chỉ số hiển thị trên mặt đồng hồ điện tử là 012.4888. Sau khi lược bỏ số 0 ở bên trái theo hướng dẫn, ta được giá trị 12.4888. Số serial không hiển thị rõ ràng trên thiết bị trong ảnh này.
+============================================================
+
+============================================================
+[2026-03-04 02:50:14] ID: 58351 | SDB: 23061010030 | Model: gemini-2.5-flash-lite | Type: N/A
+Status: thanh_cong | Time: 5867ms
+AI Chi So: 0424888 | Parse: 424888
+Human Chi So: 424888 | Match: 1
+Score POC: 100/100 [AI_CHINH_XAC_CAO]
+Score TT : 100/100 [TU_DONG_CHAP_NHAN]
+Tokens: P=439 O=78 T=0
+Cost: 1.981138 VND
+Giải thích: Chỉ số tiêu thụ nước ban đầu là 0424888 m³.
+============================================================
+
+============================================================
+[2026-03-04 02:51:07] ID: 58351 | SDB: 23061010030 | Model: gemini-2.5-flash-lite | Type: N/A
+Status: thanh_cong | Time: 2724ms
+AI Chi So: 0424888 | Parse: 424888
+Human Chi So: 424888 | Match: 1
+Score POC: 100/100 [AI_CHINH_XAC_CAO]
+Score TT : 100/100 [TU_DONG_CHAP_NHAN]
+Tokens: P=439 O=77 T=0
+Cost: 1.970586 VND
+Giải thích: Chỉ số tiêu thụ nước hiện tại là 424888 mét khối.
+============================================================
+
+============================================================
+[2026-03-04 02:51:32] ID: 58351 | SDB: 23061010030 | Model: gemini-2.5-flash-lite | Type: N/A
+Status: thanh_cong | Time: 2607ms
+AI Chi So: 0424888 | Parse: 424888
+Human Chi So: 424888 | Match: 1
+Score POC: 100/100 [AI_CHINH_XAC_CAO]
+Score TT : 100/100 [TU_DONG_CHAP_NHAN]
+Tokens: P=442 O=78 T=0
+Cost: 1.989052 VND
+Giải thích: Chỉ số tiêu thụ nước hiện tại là 424.888 mét khối.
+============================================================
+
+============================================================
+[2026-03-04 02:53:03] ID: 58351 | SDB: 23061010030 | Model: gemini-2.5-flash-lite | Type: N/A
+Status: thanh_cong | Time: 2662ms
+AI Chi So: 0424888 | Parse: 424888
+Human Chi So: 424888 | Match: 1
+Score POC: 100/100 [AI_CHINH_XAC_CAO]
+Score TT : 100/100 [TU_DONG_CHAP_NHAN]
+Tokens: P=431 O=76 T=0
+Cost: 1.938930 VND
+Giải thích: Chỉ số tiêu thụ nước là 424.888 mét khối.
+============================================================
+
+============================================================
+[2026-03-04 02:54:04] ID: 58351 | SDB: 23061010030 | Model: gemini-2.5-flash-lite-preview-09-2025 | Type: N/A
+Status: thanh_cong | Time: 35890ms
+AI Chi So: 0124888 | Parse: 124888
+Human Chi So: 424888 | Match: 0
+Score POC: 33/100 [AI_KHONG_DAT_YEU_CAU]
+Score TT : 20/100 [TU_CHOI]
+Tokens: P=431 O=118 T=0
+Cost: 2.382114 VND
+Giải thích: Chỉ số đồng hồ nước hiển thị là 0124888 mét khối. Phần chỉ số nguyên (không tính phần thập phân) là 124888 mét khối. Chữ 'm³' trên màn hình xác nhận đơn vị đo là mét khối.
+============================================================
+
+============================================================
+[2026-03-04 02:54:27] ID: 58351 | SDB: 23061010030 | Model: gemini-2.5-flash-lite | Type: N/A
+Status: thanh_cong | Time: 2773ms
+AI Chi So: 0424888 | Parse: 424888
+Human Chi So: 424888 | Match: 1
+Score POC: 100/100 [AI_CHINH_XAC_CAO]
+Score TT : 100/100 [TU_DONG_CHAP_NHAN]
+Tokens: P=431 O=87 T=0
+Cost: 2.055002 VND
+Giải thích: Chỉ số tiêu thụ nước tính bằng mét khối (m³). Chỉ số chính là 424.888 mét khối.
+============================================================
+
+============================================================
+[2026-03-04 02:54:42] ID: 58351 | SDB: 23061010030 | Model: gemini-2.5-flash | Type: N/A
+Status: thanh_cong | Time: 4214ms
+AI Chi So: 0424888 | Parse: 424888
+Human Chi So: 424888 | Match: 1
+Score POC: 100/100 [AI_CHINH_XAC_CAO]
+Score TT : 100/100 [TU_DONG_CHAP_NHAN]
+Tokens: P=431 O=99 T=358
+Cost: 33.550084 VND
+Giải thích: Chỉ số đồng hồ nước kỹ thuật số hiển thị tổng lượng nước đã tiêu thụ là 424.888 mét khối (m³). Đây là phần số nguyên của chỉ số.
+============================================================
+
+============================================================
+[2026-03-04 02:55:28] ID: 85112 | SDB: 23061010030 | Model: gemini-2.5-flash-lite | Type: N/A
+Status: thanh_cong | Time: 3825ms
+AI Chi So: 7771049 | Parse: 7771049
+Human Chi So: 777104 | Match: 0
+Score POC: 11/100 [AI_KHONG_DAT_YEU_CAU]
+Score TT : 30/100 [TU_CHOI]
+Tokens: P=431 O=79 T=0
+Cost: 1.970586 VND
+Giải thích: Chỉ số tiêu thụ nước hiện tại là 7771049 mét khối.
+============================================================
+
+============================================================
+[2026-03-04 02:56:49] ID: 85112 | SDB: 23061010030 | Model: gemini-2.5-flash | Type: N/A
+Status: thanh_cong | Time: 6803ms
+AI Chi So: 0771049 | Parse: 771049
+Human Chi So: 777104 | Match: 0
+Score POC: 13/100 [AI_KHONG_DAT_YEU_CAU]
+Score TT : 90/100 [TU_DONG_CHAP_NHAN]
+Tokens: P=431 O=93 T=643
+Cost: 51.950134 VND
+Giải thích: Chỉ số đồng hồ nước hiện tại là 771049 m³. Đây là tổng lượng nước đã tiêu thụ tích lũy tính đến thời điểm đọc.
+============================================================
+
+============================================================
+[2026-03-04 03:08:53] ID: 85112 | SDB: 23061010030 | Model: gemini-2.5-flash-lite | Type: N/A
+Status: thanh_cong | Time: 2655ms
+AI Chi So: 7771049 | Parse: 7771049
+Human Chi So: 777104 | Match: 0
+Score POC: 11/100 [AI_KHONG_DAT_YEU_CAU]
+Score TT : 30/100 [TU_CHOI]
+Tokens: P=441 O=81 T=0
+Cost: 2.018070 VND
+Giải thích: Chỉ số chính của đồng hồ nước là 7.771.049 mét khối.
+============================================================
+
+============================================================
+[2026-03-04 03:09:12] ID: 85112 | SDB: 23061010030 | Model: gemini-2.5-flash | Type: N/A
+Status: thanh_cong | Time: 6400ms
+AI Chi So: 0771049 | Parse: 771049
+Human Chi So: 777104 | Match: 0
+Score POC: 13/100 [AI_KHONG_DAT_YEU_CAU]
+Score TT : 90/100 [TU_DONG_CHAP_NHAN]
+Tokens: P=441 O=114 T=707
+Cost: 57.635024 VND
+Giải thích: Đây là chỉ số tiêu thụ nước tổng cộng được ghi nhận trên đồng hồ nước kỹ thuật số. Đồng hồ hiển thị 0771049 mét khối (m³). Glare đã được xử lý để đọc chính xác chữ số đầu tiên là '0'.
+============================================================
+
+============================================================
+[2026-03-04 03:10:56] ID: 65038 | SDB: 23061010030 | Model: gemini-2.5-flash-lite-preview-09-2025 | Type: N/A
+Status: thanh_cong | Time: 24122ms
+AI Chi So: 0508860 | Parse: 508860
+Human Chi So: 508860 | Match: 1
+Score POC: 100/100 [AI_CHINH_XAC_CAO]
+Score TT : 100/100 [TU_DONG_CHAP_NHAN]
+Tokens: P=441 O=128 T=0
+Cost: 2.514014 VND
+Giải thích: Chỉ số công tơ nước hiển thị là 0508860 mét khối (m³). Vì không có chữ số thập phân rõ ràng trên màn hình chính, chúng ta lấy toàn bộ phần số nguyên. Phần chỉ số nguyên (loại trừ số 0 dẫn đầu) là 508860.
+============================================================
+
+============================================================
+[2026-03-04 03:11:14] ID: 65038 | SDB: 23061010030 | Model: gemini-2.5-flash-lite | Type: N/A
+Status: thanh_cong | Time: 2663ms
+AI Chi So: 050886 | Parse: 50886
+Human Chi So: 508860 | Match: 0
+Score POC: 7/100 [AI_KHONG_DAT_YEU_CAU]
+Score TT : 20/100 [TU_CHOI]
+Tokens: P=441 O=79 T=0
+Cost: 1.996966 VND
+Giải thích: Chỉ số đồng hồ nước cho thấy mức tiêu thụ hiện tại là 50886 đơn vị.
+============================================================
+
+============================================================
+[2026-03-04 03:11:47] ID: 65038 | SDB: 23061010030 | Model: gemini-2.5-flash | Type: N/A
+Status: thanh_cong | Time: 7107ms
+AI Chi So: 0508860 | Parse: 508860
+Human Chi So: 508860 | Match: 1
+Score POC: 100/100 [AI_CHINH_XAC_CAO]
+Score TT : 100/100 [TU_DONG_CHAP_NHAN]
+Tokens: P=441 O=90 T=988
+Cost: 74.584174 VND
+Giải thích: Chỉ số đồng hồ nước hiển thị là 508860 mét khối (m³). Đây là tổng lượng nước đã được tiêu thụ.
+============================================================
+
+============================================================
+[2026-03-04 03:12:29] ID: 65038 | SDB: 23061010030 | Model: gemini-3-flash-preview | Type: N/A
+Status: thanh_cong | Time: 25404ms
+AI Chi So: 0508867 | Parse: 508867
+Human Chi So: 508860 | Match: 0
+Score POC: 48/100 [AI_KHONG_DAT_YEU_CAU]
+Score TT : 100/100 [TU_DONG_CHAP_NHAN]
+Tokens: P=1247 O=123 T=4334
+Cost: 369.174910 VND
+Giải thích: Chỉ số trên màn hình điện tử của đồng hồ nước hiển thị dãy số 0508867. Theo yêu cầu không có phần thập phân, ta lấy toàn bộ dãy số và lược bỏ chữ số 0 ở phía bên trái để thu được phần nguyên là 508867.
+============================================================
+
+============================================================
+[2026-03-04 03:13:03] ID: 65038 | SDB: 23061010030 | Model: gemini-2.5-flash-lite-preview-09-2025 | Type: N/A
+Status: thanh_cong | Time: 3098ms
+AI Chi So: 050886 | Parse: 50886
+Human Chi So: 508860 | Match: 0
+Score POC: 7/100 [AI_KHONG_DAT_YEU_CAU]
+Score TT : 20/100 [TU_CHOI]
+Tokens: P=441 O=108 T=0
+Cost: 2.302974 VND
+Giải thích: Chỉ số đồng hồ nước hiện tại là 050886 mét khối (m³). Đây là chỉ số phần nguyên (số khối đã sử dụng), không có chữ số thập phân được hiển thị hoặc ghi nhận trong lần đọc này.
+============================================================
+
+============================================================
+[2026-03-04 03:13:33] ID: 65038 | SDB: 23061010030 | Model: gemini-2.5-flash-lite | Type: N/A
+Status: thanh_cong | Time: 2380ms
+AI Chi So: 050886 | Parse: 50886
+Human Chi So: 508860 | Match: 0
+Score POC: 7/100 [AI_KHONG_DAT_YEU_CAU]
+Score TT : 20/100 [TU_CHOI]
+Tokens: P=441 O=75 T=0
+Cost: 1.954758 VND
+Giải thích: Chỉ số công tơ nước đo được là 50886 m³.
+============================================================
+
+============================================================
+[2026-03-04 03:37:43] ID: 65038 | SDB: 23061010030 | Model: gemini-2.5-flash-lite | Type: hinh_mo
+Status: thanh_cong | Time: 2620ms
+AI Chi So: 50886 | Parse: 50886
+Human Chi So: 508860 | Match: 0
+Score POC: 7/100 [AI_KHONG_DAT_YEU_CAU]
+Score TT : 20/100 [TU_CHOI]
+Tokens: P=478 O=82 T=0
+Cost: 2.126228 VND
+Giải thích: The main cumulative water index shown on the meter is 50886. This is the whole number of cubic meters recorded.
+============================================================
+
+============================================================
+[2026-03-04 03:38:25] ID: 65038 | SDB: 23061010030 | Model: gemini-2.5-flash | Type: hinh_mo
+Status: thanh_cong | Time: 4679ms
+AI Chi So: 0508860 | Parse: 508860
+Human Chi So: 508860 | Match: 1
+Score POC: 100/100 [AI_CHINH_XAC_CAO]
+Score TT : 100/100 [TU_DONG_CHAP_NHAN]
+Tokens: P=478 O=110 T=465
+Cost: 41.704142 VND
+Giải thích: The main digital display on the water meter shows '0508860'. The 'm³' symbol confirms this is the cumulative water index in cubic meters. There are no fractional parts visible. The number has been read directly from the screen.
+============================================================
+
+============================================================
+[2026-03-04 03:39:33] ID: 65038 | SDB: 23061010030 | Model: gemini-2.5-flash | Type: hinh_mo
+Status: thanh_cong | Time: 7857ms
+AI Chi So: 0508860 | Parse: 508860
+Human Chi So: 508860 | Match: 1
+Score POC: 100/100 [AI_CHINH_XAC_CAO]
+Score TT : 100/100 [TU_DONG_CHAP_NHAN]
+Tokens: P=478 O=99 T=707
+Cost: 56.938592 VND
+Giải thích: The main cumulative water index visible on the meter's digital display is 0508860. The first digit '0' is a leading zero. There is no fractional part shown.
+============================================================
+
+============================================================
+[2026-03-04 03:40:06] ID: 65038 | SDB: 23061010030 | Model: gemini-2.5-flash | Type: hinh_mo
+Status: thanh_cong | Time: 7611ms
+AI Chi So: 0508860 | Parse: 508860
+Human Chi So: 508860 | Match: 1
+Score POC: 100/100 [AI_CHINH_XAC_CAO]
+Score TT : 100/100 [TU_DONG_CHAP_NHAN]
+Tokens: P=478 O=103 T=494
+Cost: 43.155042 VND
+Giải thích: The main cumulative water index is read from the digital display. The digits are clearly visible as 0508860. The last digit '0' is partially obscured by glare but its segments are clearly discernible.
+============================================================
+
+============================================================
+[2026-03-04 08:34:50] ID: 84229 | SDB: 23041054665 | Model: gemini-2.5-flash-lite | Type: N/A
+Status: thanh_cong | Time: 3042ms
+AI Chi So: 220048435.0299336 | Parse: 220048435
+Human Chi So: 29 | Match: 0
+Score POC: 9/100 [AI_KHONG_DAT_YEU_CAU]
+Score TT : 50/100 [CAN_REVIEW]
+Tokens: P=398 O=174 T=0
+Cost: 2.885972 VND
+Giải thích: Chỉ số nước là 220048435.0299336. Phần nguyên là 220048435 (các chữ số đen trên nền trắng) và phần thập phân là 0299336 (các chữ số trắng trên nền đỏ). Số serial của đồng hồ là 241100535.
+============================================================
+
+============================================================
+[2026-03-04 08:36:52] ID: 84229 | SDB: 23041054665 | Model: gemini-2.5-flash-lite | Type: N/A
+Status: thanh_cong | Time: 2001ms
+AI Chi So: 220048435 029336 | Parse: 220048435
+Human Chi So: 29 | Match: 0
+Score POC: 9/100 [AI_KHONG_DAT_YEU_CAU]
+Score TT : 50/100 [CAN_REVIEW]
+Tokens: P=400 O=136 T=0
+Cost: 2.490272 VND
+Giải thích: Phần nguyên của chỉ số nước là 220048435. Phần thập phân là 029336. Số serial của đồng hồ là 241100525.
+============================================================
+
+============================================================
+[2026-03-04 08:37:49] ID: 84229 | SDB: 23041054665 | Model: gemini-2.5-flash-lite | Type: N/A
+Status: thanh_cong | Time: 2666ms
+AI Chi So: 220048435.0298 | Parse: 220048435
+Human Chi So: 29 | Match: 0
+Score POC: 9/100 [AI_KHONG_DAT_YEU_CAU]
+Score TT : 50/100 [CAN_REVIEW]
+Tokens: P=388 O=112 T=0
+Cost: 2.205368 VND
+Giải thích: Các chữ số màu đen trên nền trắng hiển thị phần nguyên là 220048435. Các chữ số màu trắng trên nền đỏ hiển thị phần thập phân là 0298.
+============================================================
+
+============================================================
+[2026-03-04 08:38:23] ID: 84229 | SDB: 23041054665 | Model: gemini-2.5-flash-lite | Type: N/A
+Status: thanh_cong | Time: 1917ms
+AI Chi So: 0029336 | Parse: 29
+Human Chi So: 29 | Match: 1
+Score POC: 100/100 [AI_CHINH_XAC_CAO]
+Score TT : 50/100 [CAN_REVIEW]
+Tokens: P=418 O=170 T=0
+Cost: 2.896524 VND
+Giải thích: Phần nguyên của chỉ số nước là 0029, được hiển thị bằng 4 chữ số đen trên nền trắng. Phần thập phân là 336, được hiển thị bằng 3 chữ số trắng trên nền đỏ. Chữ số cuối cùng của phần thập phân (số 6) được hiển thị rất mờ nên độ tin cậy thấp. Do đó, chỉ số nước đọc được là 0029.336 với độ tin cậy cao cho phần nguyên và 3 chữ số đầu của phần thập phân.
+============================================================
+
+============================================================
+[2026-03-04 08:58:11] ID: 84140 | SDB: 23041053604 | Model: gemini-2.5-flash-lite | Type: N/A
+Status: thanh_cong | Time: 4498ms
+AI Chi So: 0000588 | Parse: 0
+Human Chi So: 1 | Match: 0
+Score POC: 50/100 [AI_CAN_CANH_BAO]
+Score TT : 20/100 [TU_CHOI]
+Tokens: P=418 O=166 T=0
+Cost: 2.854316 VND
+Giải thích: Chỉ số nước được đọc từ đồng hồ cơ. Phần nguyên có 4 chữ số màu đen trên nền trắng là 0000. Phần thập phân có 4 chữ số màu trắng trên nền đỏ là 588. Do phần thập phân chỉ có 3 chữ số hiển thị (588), nên số đọc đầy đủ sẽ là 0000.588, hoặc đơn giản là 0000588 nếu ta coi phần thập phân là phần còn lại sau dấu phẩy.
+============================================================
+

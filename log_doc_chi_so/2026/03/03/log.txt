@@ -1,0 +1,183 @@
+============================================================
+[2026-03-03 07:09:09] ID: 85112 | SDB: 23061010030 | Model: gemini-2.5-flash-lite-preview-09-2025
+Status: thanh_cong | Time: 4997ms
+AI Chi So: 7771049 | Parse: 7771049
+Human Chi So: 777104 | Match: 0
+Score POC: 11/100 [AI_KHONG_DAT_YEU_CAU]
+Score TT : 30/100 [TU_CHOI]
+Tokens: P=504 O=143 T=0
+Cost: 2.838488 VND
+Giải thích: The main cumulative reading on the digital display appears to be '7771049' followed by a decimal point and then '909'. The whole number part is 7771049. There is a smaller number '167' shown below, possibly indicating flow rate or another measurement, which is ignored. The serial number field is not visible.
+============================================================
+
+============================================================
+[2026-03-03 07:10:15] ID: 85112 | SDB: 23061010030 | Model: gemini-3-flash-preview
+Status: loi_api | Time: 5204ms
+Error: Lỗi HTTP 503: This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.
+============================================================
+
+============================================================
+[2026-03-03 07:11:54] ID: 65038 | SDB: 23061010030 | Model: gemini-2.5-flash-lite-preview-09-2025
+Status: thanh_cong | Time: 36720ms
+AI Chi So: 050886 | Parse: 50886
+Human Chi So: 508860 | Match: 0
+Score POC: 7/100 [AI_KHONG_DAT_YEU_CAU]
+Score TT : 20/100 [TU_CHOI]
+Tokens: P=504 O=153 T=0
+Cost: 2.944008 VND
+Giải thích: The main display shows 050886 with one digit (0) preceding the whole number part, and potentially a fractional part that is not clearly readable or intended to be included in the whole cubic meter reading. I've kept the leftmost digits that form the whole number part, which is 050886, and trimmed the leading zero for the final whole number interpretation (50886).
+============================================================
+
+============================================================
+[2026-03-03 07:15:42] ID: 65038 | SDB: 23061010030 | Model: gemini-2.5-flash
+Status: thanh_cong | Time: 11828ms
+AI Chi So: 0508860 | Parse: 50886
+Human Chi So: 508860 | Match: 0
+Score POC: 7/100 [AI_KHONG_DAT_YEU_CAU]
+Score TT : 20/100 [TU_CHOI]
+Tokens: P=504 O=126 T=1830
+Cost: 132.986856 VND
+Giải thích: The main cumulative water index displayed on the meter is '0508860'. Assuming the last digit '0' represents a fractional part, the integer number of cubic meters (whole part) is '050886'. No clear serial number is visible on the meter.
+============================================================
+
+============================================================
+[2026-03-03 07:18:24] ID: 65038 | SDB: 23061010030 | Model: gemini-2.5-flash
+Status: thanh_cong | Time: 10277ms
+AI Chi So: 0508860 | Parse: 50886
+Human Chi So: 508860 | Match: 0
+Score POC: 7/100 [AI_KHONG_DAT_YEU_CAU]
+Score TT : 20/100 [TU_CHOI]
+Tokens: P=512 O=118 T=1449
+Cost: 107.395618 VND
+Giải thích: The main water index displayed on the meter is 0508860. The first digit is slightly dim due to reflection but identifiable as '0'. The last digit also has some reflection but is clearly '0'. No serial number is visible.
+============================================================
+
+============================================================
+[2026-03-03 07:22:05] ID: 65038 | SDB: 23061010030 | Model: gemini-2.5-flash
+Status: thanh_cong | Time: 7963ms
+AI Chi So: 0508860 | Parse: 508860
+Human Chi So: 508860 | Match: 1
+Score POC: 100/100 [AI_CHINH_XAC_CAO]
+Score TT : 100/100 [TU_DONG_CHAP_NHAN]
+Tokens: P=512 O=136 T=911
+Cost: 73.101618 VND
+Giải thích: The main digital display on the water meter shows the cumulative index as 0508860. The unit 'm³' is visible, confirming it's in cubic meters. There are no decimal or fractional parts visible. After trimming the leading zero, the integer value for the water index is 508860.
+============================================================
+
+============================================================
+[2026-03-03 08:49:18] ID: 85112 | SDB: 23061010030 | Model: gemini-3-pro-preview | Type: N/A
+Status: loi_api | Time: 1281ms
+Error: Lỗi HTTP 429: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. 
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-3-pro
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-3-pro
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-3-pro
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-3-pro
+Please retry in 41.562505451s.
+============================================================
+
+============================================================
+[2026-03-03 08:50:01] ID: 85112 | SDB: 23061010030 | Model: gemini-3-pro-preview | Type: N/A
+Status: loi_api | Time: 1210ms
+Error: Lỗi HTTP 429: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. 
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-3-pro
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-3-pro
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-3-pro
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-3-pro
+Please retry in 58.023224114s.
+============================================================
+
+============================================================
+[2026-03-03 08:50:28] ID: 85112 | SDB: 23061010030 | Model: gemini-flash-latest | Type: N/A
+Status: thanh_cong | Time: 26678ms
+AI Chi So: 7771049 | Parse: 7771049
+Human Chi So: 777104 | Match: 0
+Score POC: 11/100 [AI_KHONG_DAT_YEU_CAU]
+Score TT : 30/100 [TU_CHOI]
+Tokens: P=1318 O=112 T=4055
+Cost: 347.160800 VND
+Giải thích: Chỉ số chính hiển thị trên màn hình LCD là 7771049. Theo yêu cầu không có phần thập phân, toàn bộ dãy số được ghi nhận là số mét khối nguyên.
+============================================================
+
+============================================================
+[2026-03-03 08:55:56] ID: 85112 | SDB: 23061010030 | Model: gemini-3-pro-preview | Type: N/A
+Status: loi_api | Time: 1110ms
+Error: Lỗi HTTP 429: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. 
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-3-pro
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-3-pro
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-3-pro
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-3-pro
+Please retry in 3.319455452s.
+============================================================
+
+============================================================
+[2026-03-03 08:56:09] ID: 85112 | SDB: 23061010030 | Model: gemini-flash-latest | Type: N/A
+Status: thanh_cong | Time: 12758ms
+AI Chi So: 7771049 | Parse: 7771049
+Human Chi So: 777104 | Match: 0
+Score POC: 11/100 [AI_KHONG_DAT_YEU_CAU]
+Score TT : 30/100 [TU_CHOI]
+Tokens: P=1318 O=114 T=1393
+Cost: 136.648400 VND
+Giải thích: Chỉ số nước trên màn hình điện tử hiển thị là 7771049. Theo hướng dẫn không có phần thập phân, toàn bộ các chữ số lớn được ghi nhận là phần nguyên.
+============================================================
+
+============================================================
+[2026-03-03 09:06:12] ID: 58351 | SDB: 23061010030 | Model: gemini-2.5-flash-lite-preview-09-2025 | Type: N/A
+Status: thanh_cong | Time: 3920ms
+AI Chi So: 0124888 | Parse: 124888
+Human Chi So: 424888 | Match: 0
+Score POC: 33/100 [AI_KHONG_DAT_YEU_CAU]
+Score TT : 20/100 [TU_CHOI]
+Tokens: P=512 O=314 T=0
+Cost: 4.663984 VND
+Giải thích: The main cumulative reading on the digital display is 0124888. Since the task asks to remove any decimal or fractional digits and keep only the whole cubic meters, and based on the appearance of the reading where the larger digits represent whole cubic meters, the integer value is taken from the left part of the display. The smallest digits (261) at the bottom are likely flow rate or some other indicator, not the main index. The main reading shows 8 digits: 0124888 (the first '0' is likely a leading zero, or the display shows 7 digits of index plus one other segment). Considering the instruction to keep the leftmost digits that represent whole cubic meters and ignore fractional parts, the reading is interpreted as 124888 cubic meters, discarding the potential '0' or leading segment that is unclear or the unit indicator. Given the format '0124888' where there is no explicit decimal separator, and assuming the main index is the most prominent number, the whole number part is 124888 after stripping the leading '0' (if interpreted as part of the main number).
+============================================================
+
+============================================================
+[2026-03-03 09:09:26] ID: 58351 | SDB: 23061010030 | Model: gemini-2.5-flash | Type: N/A
+Status: thanh_cong | Time: 11144ms
+AI Chi So: 0124888 | Parse: 124888
+Human Chi So: 424888 | Match: 0
+Score POC: 33/100 [AI_KHONG_DAT_YEU_CAU]
+Score TT : 20/100 [TU_CHOI]
+Tokens: P=512 O=171 T=813
+Cost: 68.946768 VND
+Giải thích: The main cumulative water index is read as 0124888. The second digit from the left had a slight reflection, but the visible segments strongly indicate it is a '1'. The remaining digits are clear: 0, 2, 4, 8, 8, 8. The whole cubic meter value after removing leading zeros is 124888. The smaller number '261' below the main display is identified as the serial number.
+============================================================
+
+============================================================
+[2026-03-03 09:21:06] ID: 58351 | SDB: 23061010030 | Model: gemini-2.5-flash | Type: N/A
+Status: thanh_cong | Time: 5723ms
+AI Chi So: 012488.8 | Parse: 12488
+Human Chi So: 424888 | Match: 0
+Score POC: 13/100 [AI_KHONG_DAT_YEU_CAU]
+Score TT : 20/100 [TU_CHOI]
+Tokens: P=481 O=126 T=539
+Cost: 47.663384 VND
+Giải thích: Chỉ số đồng hồ đo nước hiển thị 012488.8 m³, cho biết tổng lượng nước đã tiêu thụ là 12488.8 mét khối. Phần số nguyên của chỉ số là 12488 mét khối.
+============================================================
+
+============================================================
+[2026-03-03 09:22:05] ID: 58351 | SDB: 23061010030 | Model: gemini-3-flash-preview | Type: N/A
+Status: thanh_cong | Time: 18671ms
+AI Chi So: 042.4888 | Parse: 42
+Human Chi So: 424888 | Match: 0
+Score POC: 0/100 [AI_KHONG_DAT_YEU_CAU]
+Score TT : 20/100 [TU_CHOI]
+Tokens: P=1287 O=116 T=2373
+Cost: 213.954990 VND
+Giải thích: Chỉ số nước đo được trên mặt hiển thị điện tử của đồng hồ là 042.4888 m³. Trong đó, phần số nguyên là 42 và phần thập phân là 4888.
+============================================================
+
+============================================================
+[2026-03-03 09:26:58] ID: 58351 | SDB: 23061010030 | Model: gemini-3-flash-preview | Type: N/A
+Status: thanh_cong | Time: 20100ms
+AI Chi So: 012.4888 | Parse: 12
+Human Chi So: 424888 | Match: 0
+Score POC: 0/100 [AI_KHONG_DAT_YEU_CAU]
+Score TT : 20/100 [TU_CHOI]
+Tokens: P=1263 O=111 T=2821
+Cost: 248.697450 VND
+Giải thích: Chỉ số hiển thị trên mặt đồng hồ điện tử là 012.4888. Phần số nguyên thu được sau khi loại bỏ phần thập phân và các chữ số 0 ở bên trái là 12.
+============================================================
+

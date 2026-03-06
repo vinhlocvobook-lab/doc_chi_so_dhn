@@ -40,6 +40,7 @@ $router->add('POST', '/pricing/delete', 'GeminiPricingController@delete');
 $router->add('GET', '/history/detail', 'HistoryController@detail');
 $router->add('POST', '/history/update-meter-type', 'HistoryController@updateMeterType');
 $router->add('POST', '/history/update-image-type', 'HistoryController@updateImageType');
+$router->add('POST', '/history/save-prompt-info', 'HistoryController@savePromptInfo');
 $router->add('GET', '/history/ai-read', 'AiReadController@stream');
 $router->add('GET', '/history/ai-read-logs', 'AiReadController@logs');
 $router->add('GET', '/logs', 'LogController@index');
