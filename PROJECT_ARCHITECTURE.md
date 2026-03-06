@@ -19,10 +19,14 @@ This is **NOT** a traditional multi-page PHP app. It uses a custom AJAX-based SP
     -   If absent: Returns the full HTML (via `app/Views/layout/main.php`).
 3.  **UI Updates**:
     -   **NEVER** use `window.location.reload()` or hard redirects for successful AJAX operations.
-    -   **ALWAYS** use `window.loadPage(currentUrl, true)` to refresh data gracefully. The `true` parameter enables "partial update" (refreshing only the `#history-results` container instead of `#main-content`).
+    -   **ALWAYS** use `window.loadPage(currentUrl, true)` to refresh data gracefully. The `true` parameter enables "partial update" (refreshing only the `#history-results` container instead of `#main-content`). 
+    -   **Pagination Handling**: Pagination links in the history page use SPA navigation. When navigating within the same section (e.g., `history` to `history`), the system performs a partial update of the results table.
 4.  **JavaScript Scope**: 
     -   Global helpers should be in `app.js`.
     -   Page-specific interactive logic (like Modal handling) is usually placed at the bottom of the View file inside a script tag (handled by `executeScripts` in SPA logic).
+5.  **Raw Views**: 
+    -   Controllers use `$this->view()` for standard SPA navigation.
+    -   For features requiring a completely custom layout (like Dashboard V2), use `$this->viewRaw()`.
 
 ## 3. Directory Structure
 -   `/public`: Document root. Contains `index.php` (Entry point) and `assets/`.

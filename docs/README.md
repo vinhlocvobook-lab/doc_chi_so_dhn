@@ -70,10 +70,11 @@ Nhân viên đọc đồng hồ nước hiện nay chụp ảnh đồng hồ và
 
 ## 4. Tính năng Chính
 
-### 4.1 Đọc số đồng hồ bằng AI (SSE Real-time)
-- Người dùng chọn bản ghi có ảnh → chọn model + prompt → click "Đọc AI"
-- Kết quả được stream về từng bước qua **Server-Sent Events (SSE)**
-- 7 bước xử lý: Fetch record → Download image → Call API → Parse → Save DB → Write log → Done
+### 4.1 Đọc số đồng hồ bằng AI (SSE Real-time & Multi-model)
+- Người dùng chọn bản ghi có ảnh → chọn danh sách models (ưu tiên) + prompt → click "Đọc AI".
+- Hệ thống thực hiện **đọc tuần tự (sequential retry)**: nếu model ưu tiên 1 lỗi, sẽ tự động thử sang model tiếp theo.
+- Kết quả được stream về từng bước qua **Server-Sent Events (SSE)**.
+- Tự động download và lưu trữ ảnh vào `img_dhn/` để phục vụ review sau này.
 
 ### 4.2 Đánh giá tính hợp lý (WaterMeterRationalityChecker)
 - So sánh lượng tiêu thụ AI tính với:
@@ -104,6 +105,7 @@ Nhân viên đọc đồng hồ nước hiện nay chụp ảnh đồng hồ và
 - Trang danh sách log các lần AI đọc (`tn_meter_reading_log`).
 - Xem chi tiết từng log: so sánh AI vs Nhân viên, chấm điểm độ lệch, xem Raw JSON.
 - **Lưu trữ hình ảnh an toàn**: Hình ảnh đồng hồ nước được lưu vĩnh viễn trong thư mục riêng tư `img_dhn/YYYY/MM/DD/` và chỉ có thể truy cập qua route xác thực `/logs/image`, bảo vệ tính riêng tư của dữ liệu người dùng.
+- **Dashboard V2**: Giao diện thống kê hiện đại, trực quan cho phép theo dõi tỷ lệ chính xác, chi phí và hiệu suất theo từng model/loại đồng hồ.
 
 ---
 

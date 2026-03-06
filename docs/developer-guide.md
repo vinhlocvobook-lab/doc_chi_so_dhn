@@ -99,12 +99,16 @@ $this->json(['error' => 'message'], 400);
 
 // Redirect
 $this->redirect('/login');
+
+// Render Raw View (không kèm layout)
+$this->viewRaw('logs/dashboard2', $data);
 ```
 
 **Convention:** 
 - Tất cả controller `extends Controller`
 - Constructor check session: `if (!isset($_SESSION['user_id'])) { ... }`
 - Session keys chuẩn: `user_id`, `username`, `role`
+- Dùng `view()` cho nội dung SPA, `viewRaw()` cho các trang đặc biệt không cần layout header/nav mặc định.
 
 ---
 
@@ -116,17 +120,27 @@ $this->redirect('/login');
 
 #### `stream()` — GET /history/ai-read
 Endpoint SSE (Server-Sent Events). Client kết nối qua `EventSource` API.  
-**Parameters:** `?id=RECORD_ID&model_name=MODEL&prompt_text=PROMPT`
+**Parameters:** 
+- `?id=RECORD_ID`
+- `model_names=JSON_ARRAY_OF_MODELS` (VD: `["gemini-flash-lite-latest", "gemini-2.0-flash"]`)
+- `prompt_text=PROMPT`
 
-**7 bước xử lý:**
+**Multi-model Sequential Reading:**
+Controller sẽ thử lần lượt các model trong danh sách `model_names`. 
+1. Nếu model hiện tại trả về kết quả thành công và parse được -> Dừng lại và trả kết quả `done`.
+2. Nếu model lỗi (API error) hoặc không parse được JSON -> Ghi log lỗi, tăng `retry_count` và tiếp tục thử model tiếp theo.
+3. Nếu tất cả model đều thất bại -> Trả về `error_event`.
+
+**7 bước xử lý chính:**
 ```
 1. fetch_record      → History::findById($id)
-2. downloading_image → file_get_contents(image_url) → temp file
-3. calling_api       → Gemini::prompt_image(temp, prompt, model)
+2. downloading_image → file_get_contents(image_url) → lưu vào img_dhn/
+3. [Loop models]     → Gemini::prompt_image(temp, prompt, model)
 4. parsing           → extract chi_so, handle X chars, calc cost/accuracy
-5. saving            → MeterReadingLog::create($logData)
-6. write_log_file    → log_doc_chi_so/YYYY/MM/DD/log.txt
-7. done              → send final SSE event với toàn bộ kết quả
+5. scoring           → gọi WaterMeterRationalityChecker để tính Score POC & Score Thực tế
+6. saving            → MeterReadingLog::create($logData)
+7. write_log_file    → log_doc_chi_so/YYYY/MM/DD/log.txt
+8. done              → send final SSE event với toàn bộ kết quả
 ```
 
 **SSE Event Format:**
@@ -137,7 +151,16 @@ data: {"step": "fetch_record", "label": "📋 Đang lấy dữ liệu..."}
 
 // done event (bước cuối)
 event: done
-data: {"log_id": 123, "ai_chi_so": "36539.14", "ai_chi_so_parse": 36539, ...}
+data: {
+    "log_id": 123, 
+    "ai_chi_so": "36539.14", 
+    "ai_chi_so_parse": 36539, 
+    "score_poc": 100, 
+    "score_thuc_te": 85,
+    "score_poc_details": {...},
+    "score_thuc_te_details": {...},
+    ...
+}
 
 // error event (khi có lỗi)
 event: error_event
@@ -159,6 +182,8 @@ Trả về JSON danh sách log quá khứ cho một bản ghi.
 | `index()` | GET `/` | List + lọc bản ghi chisodhn, 10/trang |
 | `detail()` | GET `/history/detail?id=X` | JSON chi tiết 1 bản ghi |
 | `updateMeterType()` | POST `/history/update-meter-type` | Cập nhật loại đồng hồ |
+| `updateImageType()` | POST `/history/update-image-type` | Cập nhật phân loại ảnh (hinh_ro, hinh_mo, ...) |
+| `savePromptInfo()` | POST `/history/save-prompt-info` | Lưu cấu hình prompt và model mặc định cho Record/MeterType |
 
 **Filters hỗ trợ:** `nam`, `thang`, `loaiDongHo`, `loaiDongHo_new`, `soDanhBo`, `coHinh`
 
@@ -175,6 +200,8 @@ Trả về JSON danh sách log quá khứ cho một bản ghi.
 | `index()` | GET `/logs` | Liệt kê log AI đọc (mới nhất lên trước) có phân trang. |
 | `detail()` | GET `/logs/detail?id=X` | JSON chi tiết 1 lần AI đọc, điểm số và lý do. |
 | `image()` | GET `/logs/image?path=...` | Stream file ảnh từ thư mục private `img_dhn/`. |
+| `dashboard()` | GET `/logs/dashboard` | Thống kê hiệu suất AI qua các biểu đồ (V1). |
+| `dashboard2()` | GET `/logs/dashboard2` | Dashboard V2 hiện đại, sử dụng `viewRaw` để render full-screen giao diện mới. |
 
 **Bảo mật hình ảnh (Secure Image Streaming):**
 Hình ảnh lấy về từ CAWACO không được lưu public. Chúng được lưu trong thư mục `img_dhn/` ở thư mục gốc (nằm ngoài thư mục `public/`). `LogController@image` kiểm tra login session và chặn directory traversal attacks trước khi `readfile()` hình ảnh ra cho người dùng.

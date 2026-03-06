@@ -69,6 +69,7 @@ users ── quản lý người dùng / reviewer
 | `prompt_text` | text | Nội dung prompt đầy đủ gửi cho AI |
 | `img_dhn` | varchar(500) | Đường dẫn lưu ảnh nội bộ (ví dụ: `img_dhn/2026/02/27/meter_123.jpg`) |
 | `linkHinhDongHo` | varchar(500) | URL ảnh gốc từ hệ thống CAWACO |
+| `image_type` | enum | Phân loại ảnh (hinh_ro, hinh_mo, hinh_khong_day_du, ...) |
 | `created_at` | timestamp | Thời gian tạo (auto) |
 
 ### Nhóm 2: Kết quả AI
@@ -99,7 +100,7 @@ users ── quản lý người dùng / reviewer
 |-----|------|-------|
 | `api_started_at` | timestamp | Thời điểm bắt đầu gọi API |
 | `api_completed_at` | timestamp | Thời điểm kết thúc gọi API |
-| `retry_count` | tinyint(4) | Số lần thử lại (mặc định 0) |
+| `retry_count` | tinyint(4) | Số lần thử lại (mặc định 0). Dùng cho multi-model sequential reading. |
 | `trang_thai_api` | enum | `thanh_cong` / `timeout` / `loi_api` / `loi_parse` / `rate_limit` |
 | `thong_bao_loi` | text | Thông báo lỗi nếu có |
 
